@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MovieV1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "original_title": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "genres": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "overview": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "title"
+  ]
+}

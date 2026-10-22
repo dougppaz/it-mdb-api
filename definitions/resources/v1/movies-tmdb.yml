@@ -1,0 +1,30 @@
+schema: definitions/schemas/movie-v1.json
+source: tmdb
+endpoint: /v1/movies/{tmdb_id}
+description: Retrieve movie details using TMDB identifier.
+
+parameters:
+  path:
+    - name: tmdb_id
+      type: integer
+      required: true
+      description: TMDB numeric identifier (e.g. 550).
+  query:
+    - name: language
+      type: string
+      default: en-US
+      required: false
+      description: Language code for localized title/content (e.g. en-US, pt-BR).
+
+behavior:
+  cache:
+    key_pattern: "movie:tmdb:{tmdb_id}:{language}"
+    ttl_seconds: 86400
+    negative_ttl_seconds: 300
+  parser: definitions/parsers/tmdb_movie.py
+  upstream:
+    modality: definitions/upstream/tmdb-v3-api.yml
+    method: GET
+    path: /movie/{tmdb_id}
+    query_params:
+      language: "{language}"

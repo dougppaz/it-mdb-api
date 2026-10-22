@@ -1,0 +1,11 @@
+name: tmdb-v3-api
+description: TMDB v3 REST API service definition with rate limiting and authentication credentials.
+base_url: https://api.themoviedb.org/3/
+authentication:
+  type: bearer
+  location: header
+  name: Authorization
+  env_var: TMDB_API_READ_ACCESS_TOKEN
+rate_limit:
+  requests_per_second: 50
+  burst: 10

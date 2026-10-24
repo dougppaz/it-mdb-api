@@ -99,9 +99,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] Queue service implemented supporting task enqueue, deduplication, and wait/poll loop with timeout handling
-- [ ] Unit tests pass for queue and wait logic
-- [ ] Gate check passes: `pytest tests/unit`
+- [x] Queue service implemented supporting task enqueue, deduplication, and wait/poll loop with timeout handling
+- [x] Unit tests pass for queue and wait logic
+- [x] Gate check passes: `pytest tests/unit`
 
 **Tests**: unit
 **Gate**: Quick

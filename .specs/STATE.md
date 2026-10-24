@@ -12,4 +12,4 @@
 
 - **Current Feature**: `core-caching-queue`
 - **Phase Completed**: Specify, Design, Tasks (all approved)
-- **Next Step**: Execute Phase 2 (Task T3: Implement Async Queue & Waiting Mechanism Service)
+- **Next Step**: Execute Phase 3 (Task T4: Implement IMDb/TMDB External API Client & Parser)

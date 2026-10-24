@@ -1,17 +1,18 @@
 import json
-import os
 from typing import Any
 
 import redis.asyncio as redis
 
+from it_mdb_api.settings import RedisSettings
+
 
 def get_redis_client() -> redis.Redis:
-    if os.getenv("USE_FAKE_REDIS", "").lower() in ("true", "1", "yes"):
+    redis_settings = RedisSettings()
+    if redis_settings.use_fake_redis:
         from fakeredis import aioredis as fake_redis
 
         return fake_redis.FakeRedis(decode_responses=True)
-    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    return redis.from_url(redis_url, decode_responses=True)
+    return redis.from_url(redis_settings.redis_url, decode_responses=True)
 
 
 class CacheService:

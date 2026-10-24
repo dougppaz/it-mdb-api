@@ -57,9 +57,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] `pyproject.toml` created with dependencies (`fastapi`, `uvicorn`, `redis`, `pydantic`, `pytest`, `httpx`, `ruff`)
-- [ ] `src/main.py` created with FastAPI app instance
-- [ ] Gate check passes: `pytest`
+- [x] `pyproject.toml` created with dependencies (`fastapi`, `uvicorn`, `redis`, `pydantic`, `pytest`, `httpx`, `ruff`)
+- [x] `src/main.py` created with FastAPI app instance
+- [x] Gate check passes: `pytest`
 
 **Tests**: none
 **Gate**: Build

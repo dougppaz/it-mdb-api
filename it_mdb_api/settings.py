@@ -11,6 +11,7 @@ class AppSettings(BaseSettings):
 class RedisSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     redis_url: str = "redis://localhost:6379/0"
+    queue_redis_url: str = "redis://localhost:6379/1"
     use_fake_redis: bool = False
 
 

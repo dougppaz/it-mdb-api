@@ -7,11 +7,11 @@
 
 ## Architecture Overview
 
-The system uses FastAPI for the REST API layer, Redis as a unified backing store (for caching, task queue, and request synchronization / PubSub), and an async worker process (or worker loop) to fetch and parse external data from IMDb and TMDB.
+The system uses FastAPI for the REST API layer, Redis as a unified backing store (for caching, task queue, and request synchronization / PubSub), and an async worker process. The `definitions/` directory serves strictly as the **documentation and contract source of truth** (endpoints, upstream specs, schemas, and parsers). The application code is implemented statically and explicitly based on these documented contracts.
 
 ```mermaid
 graph TD
-    A[Client Request /v1/...] --> B[API Controller / Cache Manager]
+    A[Client Request /v1/... with path & query params] --> B[FastAPI Endpoint Controller]
     B -->|1. Check Cache| C{Cache Hit?}
     C -->|Yes| D[Return Cached Data 200 OK]
     C -->|No| E{Already in Queue / Processing?}
@@ -22,59 +22,62 @@ graph TD
     H -->|Success| D
     H -->|Timeout| I[Return 504 Gateway Timeout]
     
-    J[Async Worker Pool] -->|Pop Task| K[Call IMDb / TMDB API]
-    K --> L[Parse Response]
+    J[Async Worker Pool] -->|Pop Task| K[Call Upstream API with Auth & Rate Limit]
+    K --> L[Run Parser Script]
     L --> M[Store in Cache & Publish Event]
     M --> F
 ```
 
 ---
 
-## Code Reuse Analysis
+## Code Reuse & Contract Alignment (`definitions/`)
 
-### Existing Components to Leverage
-- Since this is a greenfield repository, there is no existing application code. We will establish clean architectural patterns (FastAPI dependency injection, Pydantic v2 validation, modular service layers, structured logging).
+The implementation adheres strictly to the documentation defined in `definitions/`:
+- **Endpoint Contracts (`definitions/resources/v1/*.yml`)**: Dictate URL paths, path parameters (`imdb_id`, `tmdb_id`), query parameters (`language`), cache key templates (`movie:imdb:{imdb_id}:{language}`), and co-located parser references.
+- **Upstream Services (`definitions/upstream/*.yml`)**: Dictate base URLs (`https://api.themoviedb.org/3/`), authentication methods (`Bearer` token via environment variables), and rate-limiting policies.
+- **Data Contracts (`definitions/schemas/*.json`)**: JSON Schemas governing the standardized movie resource model.
+- **Domain Parsers (`definitions/parsers/*.py`)**: Python parser scripts transforming raw upstream responses into standardized models.
 
 ---
 
 ## Components
 
 ### 1. Cache Service (`src/services/cache.py`)
-- **Purpose**: Abstracts Redis operations for storing and retrieving cached resource payloads and negative results.
+- **Purpose**: Abstracts Redis operations for storing and retrieving cached resource payloads and negative results using cache key patterns from definitions.
 - **Interfaces**:
-  - `async def get(key: str) -> Optional[dict]` - Retrieves cached JSON data.
-  - `async def set(key: str, value: dict, ttl: int = 86400) -> None` - Stores data with TTL.
-  - `async def set_nx(key: str, value: str, ttl: int) -> bool` - Atomic distributed lock / deduplication marker.
+  - `async def get(key: str) -> Optional[dict]`
+  - `async def set(key: str, value: dict, ttl: int = 86400) -> None`
+  - `async def set_nx(key: str, value: str, ttl: int) -> bool`
 
 ### 2. Queue & Synchronization Service (`src/services/queue.py`)
 - **Purpose**: Manages job queue insertion, task deduplication, and client waiting (via Redis PubSub / async polling).
 - **Interfaces**:
-  - `async def enqueue_or_wait(resource_key: str, fetch_func: Callable, timeout: int) -> dict` - Handles cache check, deduplication, queue push, and waiting for notification up to timeout.
-  - `async def publish_ready(resource_key: str) -> None` - Signals waiting requests that cache is populated.
+  - `async def enqueue_or_wait(resource_key: str, fetch_func: Callable, timeout: int) -> dict`
+  - `async def publish_ready(resource_key: str) -> None`
 
-### 3. External API Client Service (`src/services/imdb_tmdb.py`)
-- **Purpose**: Interacts with IMDb and TMDB APIs, parses raw responses into standardized models.
-- **Interfaces**:
-  - `async def fetch_resource(resource_type: str, identifier: str) -> dict` - Fetches from upstream APIs and parses.
+### 3. Upstream & Parser Service (`src/services/upstream.py`)
+- **Purpose**: Implements explicit HTTP clients for upstream APIs (IMDb, TMDB) honoring rate limits, authentication (`TMDB_API_READ_ACCESS_TOKEN`), and invoking the respective parser module (`definitions/parsers/`).
 
 ### 4. API Endpoints (`src/api/v1/...`)
-- **Purpose**: Exposes REST endpoints (movies, tv shows, search, id mappings) with query parameter handling (e.g., `?timeout=30`).
+- **Purpose**: Explicit FastAPI route handlers implementing the endpoints documented in `definitions/resources/v1/`, supporting global `timeout` and resource-specific `language` parameters.
 
 ---
 
 ## Data Models
 
-### Resource Cache Payload
+### Resource Cache Payload (`definitions/schemas/movie-v1.json`)
 ```python
 from pydantic import BaseModel, Field
-from typing import Optional, Any
+from typing import Optional, List
 
-class CachedResource(BaseModel):
+class MovieModel(BaseModel):
     id: str
-    resource_type: str
-    data: dict[str, Any]
-    fetched_at: str
-    ttl: int
+    title: str
+    original_title: Optional[str] = None
+    year: Optional[int] = None
+    genres: List[str] = []
+    overview: Optional[str] = None
+    rating: Optional[float] = None
 ```
 
 ---
@@ -104,4 +107,5 @@ class CachedResource(BaseModel):
 | Decision | Choice | Rationale |
 | -------- | -- | -- |
 | Python Stack | FastAPI + Redis + `redis-py` async | High performance, excellent async support, low resource overhead. |
+| Documentation Source of Truth | `definitions/` YAMLs, Schemas, & Parsers | `definitions/` serves as the explicit specification and contract documentation guiding static code implementation. |
 | Synchronization | Redis PubSub + Polling fallback | Ensures zero missed notifications while maintaining responsiveness and minimal CPU usage. |

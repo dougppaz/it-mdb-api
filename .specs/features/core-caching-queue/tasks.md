@@ -77,9 +77,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] `CacheService` implemented with `get`, `set`, and `set_nx` methods
-- [ ] Unit tests pass for cache operations
-- [ ] Gate check passes: `pytest tests/unit`
+- [x] `CacheService` implemented with `get`, `set`, and `set_nx` methods
+- [x] Unit tests pass for cache operations
+- [x] Gate check passes: `pytest tests/unit`
 
 **Tests**: unit
 **Gate**: Quick

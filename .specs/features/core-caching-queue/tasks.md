@@ -58,7 +58,7 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 
 **Done when**:
 - [x] `pyproject.toml` created with dependencies (`fastapi`, `uvicorn`, `redis`, `pydantic`, `pytest`, `httpx`, `ruff`)
-- [x] `src/main.py` created with FastAPI app instance
+- [x] `it_mdb_api/main.py` created with FastAPI app instance
 - [x] Gate check passes: `pytest`
 
 **Tests**: none
@@ -67,8 +67,8 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 ---
 
 #### T2: Implement Redis Cache Service
-**What**: Create Redis connection manager and cache service for get/set with TTL and atomic lock (`src/services/cache.py`).
-**Where**: `src/services/cache.py`
+**What**: Create Redis connection manager and cache service for get/set with TTL and atomic lock (`it_mdb_api/services/cache.py`).
+**Where**: `it_mdb_api/services/cache.py`
 **Depends on**: T1
 **Reuses**: `redis-py` async client
 
@@ -89,10 +89,10 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 ### Phase 2: Queue & Synchronization Layer
 
 #### T3: Implement Async Queue & Waiting Mechanism Service
-**What**: Create queue pushing, deduplication check, and async waiting/pubsub mechanism for uncached resource requests (`src/services/queue.py`).
-**Where**: `src/services/queue.py`
+**What**: Create queue pushing, deduplication check, and async waiting/pubsub mechanism for uncached resource requests (`it_mdb_api/services/queue.py`).
+**Where**: `it_mdb_api/services/queue.py`
 **Depends on**: T2
-**Reuses**: `src/services/cache.py`
+**Reuses**: `it_mdb_api/services/cache.py`
 
 **Tools**:
 - MCP: `filesystem`
@@ -111,8 +111,8 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 ### Phase 3: Upstream Client & API Endpoints
 
 #### T4: Implement IMDb/TMDB External API Client & Parser
-**What**: Create external API client service to fetch and parse movie, TV show, search, and ID mapping payloads from IMDb/TMDB (`src/services/imdb_tmdb.py`).
-**Where**: `src/services/imdb_tmdb.py`
+**What**: Create external API client service to fetch and parse movie, TV show, search, and ID mapping payloads from IMDb/TMDB (`it_mdb_api/services/imdb_tmdb.py`).
+**Where**: `it_mdb_api/services/imdb_tmdb.py`
 **Depends on**: T2
 **Reuses**: `httpx` async client
 
@@ -131,10 +131,10 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 ---
 
 #### T5: Implement REST API Endpoints with Cache-First & Timeout Handling
-**What**: Create API route handlers for movies, TV shows, search, and ID mapping integrating cache check, queue wait, and timeout query parameter handling (`src/api/v1/endpoints.py`).
-**Where**: `src/api/v1/endpoints.py`
+**What**: Create API route handlers for movies, TV shows, search, and ID mapping integrating cache check, queue wait, and timeout query parameter handling (`it_mdb_api/api/v1/endpoints.py`).
+**Where**: `it_mdb_api/api/v1/endpoints.py`
 **Depends on**: T3, T4
-**Reuses**: `src/services/cache.py`, `src/services/queue.py`, `src/services/imdb_tmdb.py`
+**Reuses**: `it_mdb_api/services/cache.py`, `it_mdb_api/services/queue.py`, `it_mdb_api/services/imdb_tmdb.py`
 
 **Tools**:
 - MCP: `filesystem`
@@ -153,10 +153,10 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 ### Phase 4: Worker & Comprehensive Validation
 
 #### T6: Implement Background Worker Process
-**What**: Implement background worker loop that consumes tasks from Redis queue, calls upstream API, parses data, and caches results (`src/worker.py`).
-**Where**: `src/worker.py`
+**What**: Implement background worker loop that consumes tasks from Redis queue, calls upstream API, parses data, and caches results (`it_mdb_api/worker.py`).
+**Where**: `it_mdb_api/worker.py`
 **Depends on**: T5
-**Reuses**: `src/services/queue.py`, `src/services/imdb_tmdb.py`, `src/services/cache.py`
+**Reuses**: `it_mdb_api/services/queue.py`, `it_mdb_api/services/imdb_tmdb.py`, `it_mdb_api/services/cache.py`
 
 **Tools**:
 - MCP: `filesystem`

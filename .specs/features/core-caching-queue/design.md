@@ -42,23 +42,23 @@ The implementation adheres strictly to the documentation defined in `definitions
 
 ## Components
 
-### 1. Cache Service (`src/services/cache.py`)
+### 1. Cache Service (`it_mdb_api/services/cache.py`)
 - **Purpose**: Abstracts Redis operations for storing and retrieving cached resource payloads and negative results using cache key patterns from definitions.
 - **Interfaces**:
   - `async def get(key: str) -> Optional[dict]`
   - `async def set(key: str, value: dict, ttl: int = 86400) -> None`
   - `async def set_nx(key: str, value: str, ttl: int) -> bool`
 
-### 2. Queue & Synchronization Service (`src/services/queue.py`)
+### 2. Queue & Synchronization Service (`it_mdb_api/services/queue.py`)
 - **Purpose**: Manages job queue insertion, task deduplication, and client waiting (via Redis PubSub / async polling).
 - **Interfaces**:
   - `async def enqueue_or_wait(resource_key: str, fetch_func: Callable, timeout: int) -> dict`
   - `async def publish_ready(resource_key: str) -> None`
 
-### 3. Upstream & Parser Service (`src/services/upstream.py`)
+### 3. Upstream & Parser Service (`it_mdb_api/services/upstream.py`)
 - **Purpose**: Implements explicit HTTP clients for upstream APIs (IMDb, TMDB) honoring rate limits, authentication (`TMDB_API_READ_ACCESS_TOKEN`), and invoking the respective parser module (`definitions/parsers/`).
 
-### 4. API Endpoints (`src/api/v1/...`)
+### 4. API Endpoints (`it_mdb_api/api/v1/...`)
 - **Purpose**: Explicit FastAPI route handlers implementing the endpoints documented in `definitions/resources/v1/`, supporting global `timeout` and resource-specific `language` parameters.
 
 ---
@@ -97,8 +97,8 @@ class MovieModel(BaseModel):
 
 | Concern | Location (file:line) | Impact | Mitigation |
 | ------- | -------------------- | ------ | ---------- |
-| Redis connection drops | `src/services/cache.py` | API fails to serve cache or queue | Implement reconnection logic, circuit breaker, and graceful error handling. |
-| PubSub message loss during high concurrency | `src/services/queue.py` | Waiters might hang until timeout | Combine PubSub notification with short-interval polling fallback. |
+| Redis connection drops | `it_mdb_api/services/cache.py` | API fails to serve cache or queue | Implement reconnection logic, circuit breaker, and graceful error handling. |
+| PubSub message loss during high concurrency | `it_mdb_api/services/queue.py` | Waiters might hang until timeout | Combine PubSub notification with short-interval polling fallback. |
 
 ---
 

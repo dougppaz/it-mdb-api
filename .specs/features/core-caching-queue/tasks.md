@@ -121,9 +121,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] `ImdbTmdbClient` implemented with mockable HTTP calls and response parsers
-- [ ] Unit tests pass
-- [ ] Gate check passes: `pytest tests/unit`
+- [x] `UpstreamClient` implemented with mockable HTTP calls and response parsers
+- [x] Unit tests pass
+- [x] Gate check passes: `pytest tests/unit`
 
 **Tests**: unit
 **Gate**: Quick

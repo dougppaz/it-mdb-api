@@ -42,9 +42,10 @@ The implementation adheres strictly to the documentation defined in `definitions
 
 ## Components
 
-### 1. Cache Service (`it_mdb_api/services/cache.py`)
-- **Purpose**: Abstracts Redis operations for storing and retrieving cached resource payloads and negative results using cache key patterns from definitions.
+### 1. Cache Service & Connection Factory (`it_mdb_api/services/cache.py`)
+- **Purpose**: Abstracts Redis operations for storing and retrieving cached resource payloads and negative results using cache key patterns from definitions. Implements a connection factory that uses `fakeredis.aioredis.FakeRedis` when `USE_FAKE_REDIS=true`, defaulting to `redis.asyncio.Redis` otherwise.
 - **Interfaces**:
+  - `def get_redis_client() -> Redis` - Factory returning real Redis or FakeRedis based on env.
   - `async def get(key: str) -> Optional[dict]`
   - `async def set(key: str, value: dict, ttl: int = 86400) -> None`
   - `async def set_nx(key: str, value: str, ttl: int) -> bool`

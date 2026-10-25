@@ -182,9 +182,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] Integration tests cover all ACs from specification (cache hit, queue deduplication, wait timeout 504)
-- [ ] Full test suite passes
-- [ ] Gate check passes: `pytest`
+- [x] Integration tests cover all ACs from specification (cache hit, queue deduplication, wait timeout 504)
+- [x] Full test suite passes
+- [x] Gate check passes: `pytest`
 
 **Tests**: integration
 **Gate**: Full

@@ -40,10 +40,24 @@ A cached, multi-language REST API for retrieving movie and TV show titles from I
 
 ## How to Run
 
+### Standard Mode (Production / Real Redis)
 Start the development server using Uvicorn via Poetry:
 ```bash
 python3 -m poetry run uvicorn it_mdb_api.main:app --reload
 ```
+And run the worker in a separate terminal:
+```bash
+python3 -m poetry run python3 -m it_mdb_api.worker
+```
+
+### Local Development with Unified Runner (`run.py`)
+For local development and testing, you can run both the HTTP API server and the Background Worker concurrently in a **single Python process** using `run.py`:
+```bash
+python3 -m poetry run python3 run.py
+```
+
+> **⚠️ Important Notice on `run.py` & `fakeredis`:**
+> `run.py` and `fakeredis` (`USE_FAKE_REDIS=true`) are designed **strictly for local development and testing**. Because `fakeredis` operates purely in-memory, running them in the same Python process allows the API and worker to share the same Redis state. **This solution must NOT be used in production environments**, where a standalone Redis instance/cluster and separate worker processes/containers are required.
 
 ---
 

@@ -4,6 +4,7 @@ import logging
 
 import redis.asyncio as redis
 
+from it_mdb_api.services.cache import get_shared_fake_server
 from it_mdb_api.settings import RedisSettings
 
 logger = logging.getLogger(__name__)
@@ -14,7 +15,9 @@ def get_queue_redis_client() -> redis.Redis:
     if redis_settings.use_fake_redis:
         from fakeredis import aioredis as fake_redis
 
-        return fake_redis.FakeRedis(decode_responses=True)
+        return fake_redis.FakeRedis(
+            server=get_shared_fake_server(), db=0, decode_responses=True
+        )
     url = redis_settings.queue_redis_url or redis_settings.redis_url
     return redis.from_url(url, decode_responses=True)
 

@@ -141,9 +141,9 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] Endpoints implemented supporting cache hits, queue wait, `timeout` query parameter, and HTTP 504 on timeout
-- [ ] Integration tests pass
-- [ ] Gate check passes: `pytest`
+- [x] Endpoints implemented supporting cache hits, queue wait, `timeout` query parameter, and HTTP 504 on timeout
+- [x] Integration tests pass
+- [x] Gate check passes: `pytest`
 
 **Tests**: integration
 **Gate**: Full

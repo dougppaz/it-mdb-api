@@ -5,13 +5,26 @@ import redis.asyncio as redis
 
 from it_mdb_api.settings import RedisSettings
 
+_shared_fake_server = None
+
+
+def get_shared_fake_server():
+    global _shared_fake_server
+    if _shared_fake_server is None:
+        from fakeredis import FakeServer
+
+        _shared_fake_server = FakeServer()
+    return _shared_fake_server
+
 
 def get_redis_client() -> redis.Redis:
     redis_settings = RedisSettings()
     if redis_settings.use_fake_redis:
         from fakeredis import aioredis as fake_redis
 
-        return fake_redis.FakeRedis(decode_responses=True)
+        return fake_redis.FakeRedis(
+            server=get_shared_fake_server(), db=0, decode_responses=True
+        )
     return redis.from_url(redis_settings.redis_url, decode_responses=True)
 
 

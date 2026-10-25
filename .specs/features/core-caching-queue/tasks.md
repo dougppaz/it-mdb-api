@@ -163,8 +163,8 @@ Phase 4:  T6 (Worker) ------→ T7 (Integration Tests)
 - Skill: NONE
 
 **Done when**:
-- [ ] Worker successfully polls queue, executes fetch, caches result, and notifies waiters
-- [ ] Gate check passes: `pytest`
+- [x] Worker successfully polls queue, executes fetch, caches result, and notifies waiters
+- [x] Gate check passes: `pytest`
 
 **Tests**: integration
 **Gate**: Full

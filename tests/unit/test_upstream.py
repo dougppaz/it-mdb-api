@@ -20,6 +20,15 @@ async def test_fetch_tmdb_movie_success():
             },
         )
     )
+    respx.get("https://api.themoviedb.org/3/movie/550/external_ids").mock(
+        return_value=Response(
+            200,
+            json={
+                "id": 550,
+                "imdb_id": "tt0137523",
+            },
+        )
+    )
 
     client = UpstreamClient()
     movie = await client.fetch_tmdb_movie(550, language="en-US")
@@ -29,12 +38,22 @@ async def test_fetch_tmdb_movie_success():
     assert movie["year"] == 1999
     assert movie["tmdb_poster_path"] == "/poster.jpg"
     assert movie["tmdb_backdrop_path"] == "/backdrop.jpg"
+    assert movie["imdb_id"] == "tt0137523"
+    assert movie["tmdb_id"] == 550
 
 
 @pytest.mark.asyncio
 @respx.mock
 async def test_fetch_tmdb_movie_not_found():
     respx.get("https://api.themoviedb.org/3/movie/999999").mock(
+        return_value=Response(
+            404,
+            json={
+                "status_message": "The resource you requested could not be found."
+            },
+        )
+    )
+    respx.get("https://api.themoviedb.org/3/movie/999999/external_ids").mock(
         return_value=Response(
             404,
             json={

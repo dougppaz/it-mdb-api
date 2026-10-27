@@ -135,7 +135,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-01
 
 **Done when**:
-- [ ] Upstream unit tests pass with external_ids mock.
+- [x] Upstream unit tests pass with external_ids mock.
 
 **Tests**: unit
 **Gate**: quick

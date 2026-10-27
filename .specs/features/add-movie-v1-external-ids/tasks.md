@@ -1,7 +1,7 @@
 # Add Movie v1 External IDs Tasks
 
 **Design**: none
-**Status**: Approved
+**Status**: Done
 **Approved**: 2026-10-27 - user: "vamos so corrigir para que o imdb_id seja string.. e pode seguir pra implementacao. ambos campos novos podem ser nulos."
 **Mutations**: 0
 **Build**: `pytest; ruff check it_mdb_api/ definitions/ tests/`

@@ -34,6 +34,15 @@ async def test_worker_processes_queue_item():
             },
         )
     )
+    respx.get("https://api.themoviedb.org/3/movie/550/external_ids").mock(
+        return_value=Response(
+            200,
+            json={
+                "id": 550,
+                "imdb_id": "tt0137523",
+            },
+        )
+    )
 
     queue = QueueService()
     cache = CacheService()
@@ -74,3 +83,5 @@ async def test_worker_processes_queue_item():
     assert cached_result["year"] == 1999
     assert cached_result["tmdb_poster_path"] == "/poster.jpg"
     assert cached_result["tmdb_backdrop_path"] == "/backdrop.jpg"
+    assert cached_result["imdb_id"] == "tt0137523"
+    assert cached_result["tmdb_id"] == 550

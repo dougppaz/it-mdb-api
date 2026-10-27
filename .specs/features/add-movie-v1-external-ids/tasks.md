@@ -150,7 +150,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-01
 
 **Done when**:
-- [ ] `test_worker.py` passes with external_ids mock.
+- [x] `test_worker.py` passes with external_ids mock.
 
 **Tests**: integration
 **Gate**: full

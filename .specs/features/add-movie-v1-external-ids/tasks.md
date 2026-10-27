@@ -75,7 +75,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: PARS-01
 
 **Done when**:
-- [ ] Parser outputs `imdb_id` as string (or None) and `tmdb_id` as integer (or None).
+- [x] Parser outputs `imdb_id` as string (or None) and `tmdb_id` as integer (or None).
 
 **Tests**: unit
 **Gate**: quick

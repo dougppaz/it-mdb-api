@@ -3,7 +3,7 @@
 **Design**: none
 **Status**: Approved
 **Approved**: 2025-05-18 - user: "vamos ajustar o schema de movie-v1: remova o campo genres e rating. adicione os campos tmdb_poster_path e tmdb_backdrop_path."
-**Mutations**: 3
+**Mutations**: 0
 **Build**: `pytest; python3 -m ruff check it_mdb_api/ definitions/ tests/`
 
 ## Test Coverage Matrix

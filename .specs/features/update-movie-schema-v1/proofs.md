@@ -1,7 +1,7 @@
 # update-movie-schema-v1 proofs
 
-**HEAD**: f415740
-**Tree**: dirty - definitions/parsers/imdb_movie.py, definitions/parsers/tmdb_movie.py, definitions/schemas/movie-v1.json, tests/integration/test_caching_queue.py, tests/integration/test_worker.py
+**HEAD**: 121a3d5
+**Tree**: dirty - .agents/skills/definitions-manager/, resume.txt
 **Result**: 5 pass, 0 fail; mutations 0 killed, 0 not
 
 | Check | Proof | Ran | Passed | Result |

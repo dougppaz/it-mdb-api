@@ -14,7 +14,9 @@ def parse(input_data: dict) -> dict:
         "year": int(movie.get("startYear", 0)) if movie.get("startYear") else None,
         "overview": movie.get("description", ""),
         "tmdb_poster_path": None,
-        "tmdb_backdrop_path": None
+        "tmdb_backdrop_path": None,
+        "imdb_id": movie.get("tconst") or (str(movie.get("id")) if movie.get("id") is not None else None),
+        "tmdb_id": None,
     }
 
 if __name__ == "__main__":

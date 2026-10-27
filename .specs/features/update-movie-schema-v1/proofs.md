@@ -1,6 +1,6 @@
 # update-movie-schema-v1 proofs
 
-**HEAD**: 121a3d5
+**HEAD**: 62bd9a0
 **Tree**: dirty - .agents/skills/definitions-manager/, resume.txt
 **Result**: 5 pass, 0 fail; mutations 0 killed, 0 not
 

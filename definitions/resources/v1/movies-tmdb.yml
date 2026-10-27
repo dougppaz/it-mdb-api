@@ -23,8 +23,9 @@ behavior:
     negative_ttl_seconds: 300
   parser: definitions/parsers/tmdb_movie.py
   upstream:
-    modality: definitions/upstream/tmdb-v3-api.yml
-    method: GET
-    path: /movie/{tmdb_id}
-    query_params:
-      language: "{language}"
+    movie:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /movie/{tmdb_id}
+      query_params:
+        language: "{language}"

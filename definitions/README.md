@@ -57,10 +57,11 @@ Each resource definition file defines a `GET` endpoint and maps to a response JS
 | `behavior.cache.ttl_seconds` | `integer` | Cache TTL in seconds for successful responses. |
 | `behavior.cache.negative_ttl_seconds` | `integer` (optional) | TTL for negative/404 responses. |
 | `behavior.parser` | `string` | Relative path to parser script (`definitions/parsers/[name].py`). |
-| `behavior.upstream.modality` | `string` | Path to upstream service definition (`definitions/upstream/tmdb-v3-api.yml`). |
-| `behavior.upstream.method` | `string` | HTTP method (`GET`, etc.). |
-| `behavior.upstream.path` | `string` | Upstream relative path template (e.g. `/movie/{tmdb_id}`). |
-| `behavior.upstream.query_params` | `map` | Query parameters sent to the upstream service. |
+| `behavior.upstream` | `map` | Dictionary of upstream service invocation details keyed by request name (enabling multiple requests). |
+| `behavior.upstream.[key].modality` | `string` | Path to upstream service definition (`definitions/upstream/tmdb-v3-api.yml`). |
+| `behavior.upstream.[key].method` | `string` | HTTP method (`GET`, etc.). |
+| `behavior.upstream.[key].path` | `string` | Upstream relative path template (e.g. `/movie/{tmdb_id}`). |
+| `behavior.upstream.[key].query_params` | `map` | Query parameters sent to the upstream service. |
 
 > **Note on Shared Elements:**
 > - All endpoints are `GET`.
@@ -73,5 +74,5 @@ Each resource definition file defines a `GET` endpoint and maps to a response JS
 Each parser script receives a raw JSON input file path via command-line argument, parses it, and outputs the standardized dictionary as JSON on stdout.
 
 **Contract:**
-- Must expose a function `parse(input_data: dict) -> dict`.
+- Must expose a function `parse(input_data: dict) -> dict`. `input_data` is a dictionary where upstream call results are named (keyed by upstream request names, e.g. `{"movie": {...}}`).
 - CLI execution: `python3 definitions/parsers/[name].py <input_json_file>` -> prints JSON output.

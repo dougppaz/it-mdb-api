@@ -35,4 +35,4 @@ class UpstreamClient:
 
         response.raise_for_status()
         raw_data = response.json()
-        return parse_tmdb_movie(raw_data)
+        return parse_tmdb_movie({"movie": raw_data})

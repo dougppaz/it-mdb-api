@@ -29,3 +29,7 @@ behavior:
       path: /movie/{tmdb_id}
       query_params:
         language: "{language}"
+    external_ids:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /movie/{tmdb_id}/external_ids

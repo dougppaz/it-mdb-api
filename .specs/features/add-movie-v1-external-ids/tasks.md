@@ -60,7 +60,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: RES-01
 
 **Done when**:
-- [ ] `behavior.upstream.external_ids` is declared with path `/movie/{tmdb_id}/external_ids`.
+- [x] `behavior.upstream.external_ids` is declared with path `/movie/{tmdb_id}/external_ids`.
 
 **Tests**: none
 **Gate**: quick

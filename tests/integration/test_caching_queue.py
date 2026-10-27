@@ -34,6 +34,15 @@ async def test_e2e_concurrent_requests_and_deduplication():
             },
         )
     )
+    respx.get("https://api.themoviedb.org/3/movie/299534/external_ids").mock(
+        return_value=Response(
+            200,
+            json={
+                "id": 299534,
+                "imdb_id": "tt4154796",
+            },
+        )
+    )
 
     queue = QueueService()
 
@@ -62,6 +71,8 @@ async def test_e2e_concurrent_requests_and_deduplication():
         assert data["title"] == "Avengers: Endgame"
         assert data["tmdb_poster_path"] == "/poster_endgame.jpg"
         assert data["tmdb_backdrop_path"] == "/backdrop_endgame.jpg"
+        assert data["imdb_id"] == "tt4154796"
+        assert data["tmdb_id"] == 299534
 
     queue_len = await queue.client.llen("tasks:movies")
     assert queue_len == 0

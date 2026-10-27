@@ -120,7 +120,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-01
 
 **Done when**:
-- [ ] `test_parsers.py` asserts `imdb_id` and `tmdb_id` on parser outputs and passes.
+- [x] `test_parsers.py` asserts `imdb_id` and `tmdb_id` on parser outputs and passes.
 
 **Tests**: unit
 **Gate**: quick

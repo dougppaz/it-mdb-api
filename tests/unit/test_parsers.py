@@ -1,6 +1,5 @@
-import pytest
-from definitions.parsers.tmdb_movie import parse as parse_tmdb
 from definitions.parsers.imdb_movie import parse as parse_imdb
+from definitions.parsers.tmdb_movie import parse as parse_tmdb
 
 
 def test_parse_tmdb_named_input():
@@ -12,13 +11,19 @@ def test_parse_tmdb_named_input():
             "overview": "Mischief, Mayhem, Soap.",
             "poster_path": "/poster.jpg",
             "backdrop_path": "/backdrop.jpg",
-        }
+        },
+        "external_ids": {
+            "id": 550,
+            "imdb_id": "tt0137523",
+        },
     }
     result = parse_tmdb(named_input)
     assert result["id"] == "550"
     assert result["title"] == "Fight Club"
     assert result["year"] == 1999
     assert result["tmdb_poster_path"] == "/poster.jpg"
+    assert result["imdb_id"] == "tt0137523"
+    assert result["tmdb_id"] == 550
 
 
 def test_parse_imdb_named_input():
@@ -35,3 +40,6 @@ def test_parse_imdb_named_input():
     assert result["title"] == "Fight Club"
     assert result["year"] == 1999
     assert result["tmdb_poster_path"] is None
+    assert result["imdb_id"] == "tt0137523"
+    assert result["tmdb_id"] is None
+

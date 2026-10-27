@@ -15,8 +15,8 @@ async def test_fetch_tmdb_movie_success():
                 "id": 550,
                 "title": "Fight Club",
                 "release_date": "1999-10-15",
-                "vote_average": 8.4,
-                "genres": [{"id": 18, "name": "Drama"}],
+                "poster_path": "/poster.jpg",
+                "backdrop_path": "/backdrop.jpg",
             },
         )
     )
@@ -27,8 +27,8 @@ async def test_fetch_tmdb_movie_success():
     assert movie["id"] == "550"
     assert movie["title"] == "Fight Club"
     assert movie["year"] == 1999
-    assert movie["rating"] == 8.4
-    assert movie["genres"] == ["Drama"]
+    assert movie["tmdb_poster_path"] == "/poster.jpg"
+    assert movie["tmdb_backdrop_path"] == "/backdrop.jpg"
 
 
 @pytest.mark.asyncio

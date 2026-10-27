@@ -29,8 +29,8 @@ async def test_worker_processes_queue_item():
                 "id": 550,
                 "title": "Fight Club",
                 "release_date": "1999-10-15",
-                "vote_average": 8.4,
-                "genres": [{"id": 18, "name": "Drama"}],
+                "poster_path": "/poster.jpg",
+                "backdrop_path": "/backdrop.jpg",
             },
         )
     )
@@ -72,3 +72,5 @@ async def test_worker_processes_queue_item():
     assert cached_result is not None
     assert cached_result["title"] == "Fight Club"
     assert cached_result["year"] == 1999
+    assert cached_result["tmdb_poster_path"] == "/poster.jpg"
+    assert cached_result["tmdb_backdrop_path"] == "/backdrop.jpg"

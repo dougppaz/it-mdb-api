@@ -15,17 +15,14 @@
     "year": {
       "type": "integer"
     },
-    "genres": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "overview": {
       "type": "string"
     },
-    "rating": {
-      "type": "number"
+    "tmdb_poster_path": {
+      "type": "string"
+    },
+    "tmdb_backdrop_path": {
+      "type": "string"
     }
   },
   "required": [

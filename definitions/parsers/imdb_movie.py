@@ -1,5 +1,6 @@
-import sys
 import json
+import sys
+
 
 def parse(input_data: dict) -> dict:
     """
@@ -10,9 +11,9 @@ def parse(input_data: dict) -> dict:
         "title": input_data.get("primaryTitle") or input_data.get("title"),
         "original_title": input_data.get("originalTitle"),
         "year": int(input_data.get("startYear", 0)) if input_data.get("startYear") else None,
-        "genres": input_data.get("genres", "").split(",") if isinstance(input_data.get("genres"), str) else input_data.get("genres", []),
         "overview": input_data.get("description", ""),
-        "rating": float(input_data.get("averageRating", 0.0)) if input_data.get("averageRating") else None
+        "tmdb_poster_path": None,
+        "tmdb_backdrop_path": None
     }
 
 if __name__ == "__main__":

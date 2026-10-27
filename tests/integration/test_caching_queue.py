@@ -29,8 +29,8 @@ async def test_e2e_concurrent_requests_and_deduplication():
                 "id": 299534,
                 "title": "Avengers: Endgame",
                 "release_date": "2019-04-24",
-                "vote_average": 8.3,
-                "genres": [{"id": 12, "name": "Adventure"}],
+                "poster_path": "/poster_endgame.jpg",
+                "backdrop_path": "/backdrop_endgame.jpg",
             },
         )
     )
@@ -60,6 +60,8 @@ async def test_e2e_concurrent_requests_and_deduplication():
         data = response.json()
         assert data["id"] == "299534"
         assert data["title"] == "Avengers: Endgame"
+        assert data["tmdb_poster_path"] == "/poster_endgame.jpg"
+        assert data["tmdb_backdrop_path"] == "/backdrop_endgame.jpg"
 
     queue_len = await queue.client.llen("tasks:movies")
     assert queue_len == 0

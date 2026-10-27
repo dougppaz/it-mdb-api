@@ -10,6 +10,6 @@
 
 ## Handoff Snapshot
 
-- **Current Feature**: `core-caching-queue`
-- **Phase Completed**: Specify, Design, Tasks (all approved)
-- **Next Step**: Feature `core-caching-queue` fully executed and tested. Ready for Verifier review.
+- **Current Feature**: `add-movie-v1-external-ids`
+- **Phase Completed**: Specify, Tasks (both approved)
+- **Next Step**: Execute tasks T1 -> T9.

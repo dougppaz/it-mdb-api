@@ -1,3 +1,5 @@
+import asyncio
+
 import httpx
 
 from definitions.parsers.tmdb_movie import parse as parse_tmdb_movie
@@ -14,7 +16,8 @@ class UpstreamClient:
         return httpx.AsyncClient(timeout=10.0)
 
     async def fetch_tmdb_movie(self, tmdb_id: int, language: str = "en-US") -> dict:
-        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}"
+        movie_url = f"https://api.themoviedb.org/3/movie/{tmdb_id}"
+        ext_url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/external_ids"
         headers = {
             "Authorization": f"Bearer {settings.tmdb.tmdb_api_read_access_token}",
             "accept": "application/json",
@@ -25,14 +28,27 @@ class UpstreamClient:
         # Close client if created locally and not passed in
         should_close = self._client is None
         try:
-            response = await client.get(url, headers=headers, params=params)
+            movie_resp, ext_resp = await asyncio.gather(
+                client.get(movie_url, headers=headers, params=params),
+                client.get(ext_url, headers=headers),
+                return_exceptions=True,
+            )
         finally:
             if should_close:
                 await client.aclose()
 
-        if response.status_code == 404:
+        if isinstance(movie_resp, Exception):
+            raise movie_resp
+
+        if movie_resp.status_code == 404:
             raise LookupError(f"TMDB movie {tmdb_id} not found")
 
-        response.raise_for_status()
-        raw_data = response.json()
-        return parse_tmdb_movie({"movie": raw_data})
+        movie_resp.raise_for_status()
+        raw_movie_data = movie_resp.json()
+
+        if not isinstance(ext_resp, Exception) and ext_resp.status_code == 200:
+            raw_ext_data = ext_resp.json()
+        else:
+            raw_ext_data = {}
+
+        return parse_tmdb_movie({"movie": raw_movie_data, "external_ids": raw_ext_data})

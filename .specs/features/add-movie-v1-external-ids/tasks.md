@@ -105,7 +105,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: UPSTR-01
 
 **Done when**:
-- [ ] Upstream client queries external_ids and passes `{"movie": ..., "external_ids": ...}` to `parse_tmdb_movie`.
+- [x] Upstream client queries external_ids and passes `{"movie": ..., "external_ids": ...}` to `parse_tmdb_movie`.
 
 **Tests**: unit
 **Gate**: quick

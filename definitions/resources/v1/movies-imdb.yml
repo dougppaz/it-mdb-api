@@ -23,3 +23,11 @@ behavior:
     ttl_seconds: 86400
     negative_ttl_seconds: 300
   parser: definitions/parsers/imdb_movie.py
+  upstream:
+    find:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /find/{imdb_id}
+      query_params:
+        external_source: imdb_id
+        language: "{language}"

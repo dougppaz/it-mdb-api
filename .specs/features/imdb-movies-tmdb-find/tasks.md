@@ -1,7 +1,7 @@
 # Implement IMDb Movies Endpoint via TMDB Find Tasks
 
 **Design**: none
-**Status**: Approved
+**Status**: Done
 **Approved**: 2026-10-27 - user: "sim"
 **Mutations**: 0
 **Build**: `pytest; ruff check it_mdb_api/ definitions/ tests/`

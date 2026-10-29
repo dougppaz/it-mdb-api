@@ -79,4 +79,4 @@ class UpstreamClient:
         if not movie_results:
             raise LookupError(f"IMDb movie {imdb_id} not found in TMDB find results")
 
-        return parse_imdb_movie({"find": raw_data})
+        return parse_imdb_movie({"find": raw_data, "imdb_id": imdb_id})

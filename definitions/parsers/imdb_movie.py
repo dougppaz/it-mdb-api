@@ -21,7 +21,8 @@ def parse(input_data: dict) -> dict:
     poster_path = movie.get("poster_path")
     backdrop_path = movie.get("backdrop_path")
     
-    imdb_id = movie.get("imdb_id") or movie.get("tconst") or (str(raw_id) if raw_id is not None else None)
+    fallback_imdb_id = input_data.get("imdb_id")
+    imdb_id = movie.get("imdb_id") or fallback_imdb_id or movie.get("tconst") or (str(raw_id) if raw_id is not None else None)
     tmdb_id = int(movie.get("id")) if movie.get("id") is not None else None
 
     return {

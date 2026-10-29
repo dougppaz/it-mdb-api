@@ -85,3 +85,65 @@ async def test_worker_processes_queue_item():
     assert cached_result["tmdb_backdrop_path"] == "/backdrop.jpg"
     assert cached_result["imdb_id"] == "tt0137523"
     assert cached_result["tmdb_id"] == 550
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_worker_processes_imdb_queue_item():
+    respx.get("https://api.themoviedb.org/3/find/tt0137523").mock(
+        return_value=Response(
+            200,
+            json={
+                "movie_results": [
+                    {
+                        "id": 550,
+                        "title": "Fight Club",
+                        "release_date": "1999-10-15",
+                        "poster_path": "/poster.jpg",
+                        "backdrop_path": "/backdrop.jpg",
+                        "imdb_id": "tt0137523",
+                    }
+                ]
+            },
+        )
+    )
+
+    queue = QueueService()
+    cache = CacheService()
+    resource_key = "movie:imdb:tt0137523:en"
+
+    await queue.enqueue_task(
+        "tasks:movies",
+        {
+            "imdb_id": "tt0137523",
+            "language": "en",
+            "resource_key": resource_key,
+        },
+    )
+
+    worker = Worker(queue_name="tasks:movies")
+
+    async def run_one_task():
+        for _ in range(20):
+            cached = await cache.get(resource_key)
+            if cached is not None:
+                break
+            await asyncio.sleep(0.05)
+        worker.stop()
+
+    worker_task = asyncio.create_task(worker.run())
+    watcher_task = asyncio.create_task(run_one_task())
+
+    await watcher_task
+    worker_task.cancel()
+    try:
+        await worker_task
+    except asyncio.CancelledError:
+        pass
+
+    cached_result = await cache.get(resource_key)
+    assert cached_result is not None
+    assert cached_result["title"] == "Fight Club"
+    assert cached_result["year"] == 1999
+    assert cached_result["imdb_id"] == "tt0137523"
+    assert cached_result["tmdb_id"] == 550

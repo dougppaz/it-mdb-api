@@ -165,8 +165,8 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-02
 
 **Done when**:
-- [ ] Integration tests pass for `/v1/movies/tt{imdb_id}`.
-- [ ] `pytest` passes across all test suites.
+- [x] Integration tests pass for `/v1/movies/tt{imdb_id}`.
+- [x] `pytest` passes across all test suites.
 
 **Tests**: integration
 **Gate**: full

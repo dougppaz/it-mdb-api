@@ -55,9 +55,23 @@ async def test_get_tmdb_movie_queue_wait_and_populate():
 
 
 @pytest.mark.asyncio
-async def test_get_tmdb_movie_timeout():
+async def test_get_imdb_movie_cache_hit():
+    cache = CacheService()
+    resource_key = "movie:imdb:tt0137523:en"
+    await cache.set(resource_key, {"id": "550", "title": "Fight Club", "imdb_id": "tt0137523"})
+
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.get("/v1/movies/999?timeout=1")
+        response = await ac.get("/v1/movies/tt0137523")
+
+    assert response.status_code == 200
+    assert response.json() == {"id": "550", "title": "Fight Club", "imdb_id": "tt0137523"}
+
+
+@pytest.mark.asyncio
+async def test_get_imdb_movie_timeout():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get("/v1/movies/tt9999999?timeout=1")
 
     assert response.status_code == 504

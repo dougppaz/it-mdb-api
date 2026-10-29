@@ -60,7 +60,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: PARS-02
 
 **Done when**:
-- [ ] Parser extracts movie fields from `find.movie_results[0]`, preserving backwards compatibility with legacy format.
+- [x] Parser extracts movie fields from `find.movie_results[0]`, preserving backwards compatibility with legacy format.
 
 **Tests**: unit
 **Gate**: quick

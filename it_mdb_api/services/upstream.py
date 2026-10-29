@@ -2,6 +2,7 @@ import asyncio
 
 import httpx
 
+from definitions.parsers.imdb_movie import parse as parse_imdb_movie
 from definitions.parsers.tmdb_movie import parse as parse_tmdb_movie
 from it_mdb_api.settings import settings
 
@@ -52,3 +53,30 @@ class UpstreamClient:
             raw_ext_data = {}
 
         return parse_tmdb_movie({"movie": raw_movie_data, "external_ids": raw_ext_data})
+
+    async def fetch_imdb_movie(self, imdb_id: str, language: str = "en") -> dict:
+        url = f"https://api.themoviedb.org/3/find/{imdb_id}"
+        headers = {
+            "Authorization": f"Bearer {settings.tmdb.tmdb_api_read_access_token}",
+            "accept": "application/json",
+        }
+        params = {"external_source": "imdb_id", "language": language}
+
+        client = await self._get_client()
+        should_close = self._client is None
+        try:
+            response = await client.get(url, headers=headers, params=params)
+        finally:
+            if should_close:
+                await client.aclose()
+
+        if response.status_code == 404:
+            raise LookupError(f"IMDb movie {imdb_id} not found")
+
+        response.raise_for_status()
+        raw_data = response.json()
+        movie_results = raw_data.get("movie_results", [])
+        if not movie_results:
+            raise LookupError(f"IMDb movie {imdb_id} not found in TMDB find results")
+
+        return parse_imdb_movie({"find": raw_data})

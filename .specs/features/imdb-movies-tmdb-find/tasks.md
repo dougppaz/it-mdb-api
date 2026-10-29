@@ -90,7 +90,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: UPSTR-02
 
 **Done when**:
-- [ ] `fetch_imdb_movie` queries TMDB find endpoint and raises `LookupError` if empty or 404.
+- [x] `fetch_imdb_movie` queries TMDB find endpoint and raises `LookupError` if empty or 404.
 
 **Tests**: unit
 **Gate**: quick

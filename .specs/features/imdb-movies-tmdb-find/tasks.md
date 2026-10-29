@@ -105,7 +105,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-02
 
 **Done when**:
-- [ ] Unit tests for `fetch_imdb_movie` pass with respx mocks.
+- [x] Unit tests for `fetch_imdb_movie` pass with respx mocks.
 
 **Tests**: unit
 **Gate**: quick

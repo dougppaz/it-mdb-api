@@ -150,7 +150,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: ROUTE-01
 
 **Done when**:
-- [ ] Route `/v1/movies/tt{imdb_id}` handles cache hit, dedup locking, task enqueueing, and timeout.
+- [x] Route `/v1/movies/tt{imdb_id}` handles cache hit, dedup locking, task enqueueing, and timeout.
 
 **Tests**: integration
 **Gate**: full

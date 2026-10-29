@@ -26,20 +26,28 @@ def test_parse_tmdb_named_input():
     assert result["tmdb_id"] == 550
 
 
-def test_parse_imdb_named_input():
+def test_parse_imdb_find_named_input():
     named_input = {
-        "movie": {
-            "tconst": "tt0137523",
-            "primaryTitle": "Fight Club",
-            "startYear": "1999",
-            "description": "An insomniac office worker...",
+        "find": {
+            "movie_results": [
+                {
+                    "id": 550,
+                    "title": "Fight Club",
+                    "release_date": "1999-10-15",
+                    "overview": "Mischief, Mayhem, Soap.",
+                    "poster_path": "/poster.jpg",
+                    "backdrop_path": "/backdrop.jpg",
+                    "imdb_id": "tt0137523",
+                }
+            ]
         }
     }
     result = parse_imdb(named_input)
-    assert result["id"] == "tt0137523"
+    assert result["id"] == "550"
     assert result["title"] == "Fight Club"
     assert result["year"] == 1999
-    assert result["tmdb_poster_path"] is None
+    assert result["tmdb_poster_path"] == "/poster.jpg"
+    assert result["tmdb_backdrop_path"] == "/backdrop.jpg"
     assert result["imdb_id"] == "tt0137523"
-    assert result["tmdb_id"] is None
+    assert result["tmdb_id"] == 550
 

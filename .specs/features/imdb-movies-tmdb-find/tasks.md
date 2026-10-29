@@ -75,7 +75,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: TEST-02
 
 **Done when**:
-- [ ] `test_parse_imdb_find_named_input` passes asserting all `movie-v1` fields.
+- [x] `test_parse_imdb_find_named_input` passes asserting all `movie-v1` fields.
 
 **Tests**: unit
 **Gate**: quick

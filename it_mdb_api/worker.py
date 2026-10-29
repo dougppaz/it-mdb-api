@@ -32,19 +32,32 @@ class Worker:
                 _, raw_payload = result
                 payload = json.loads(raw_payload)
                 tmdb_id = payload.get("tmdb_id")
+                imdb_id = payload.get("imdb_id")
                 language = payload.get("language", "en-US")
                 resource_key = payload.get("resource_key")
 
-                logger.info(
-                    "Processing task for TMDB movie ID: %s (lang: %s)",
-                    tmdb_id,
-                    language,
-                )
+                if tmdb_id is not None:
+                    logger.info(
+                        "Processing task for TMDB movie ID: %s (lang: %s)",
+                        tmdb_id,
+                        language,
+                    )
+                else:
+                    logger.info(
+                        "Processing task for IMDb movie ID: %s (lang: %s)",
+                        imdb_id,
+                        language,
+                    )
 
                 try:
-                    movie_data = await self.upstream_client.fetch_tmdb_movie(
-                        tmdb_id, language=language
-                    )
+                    if tmdb_id is not None:
+                        movie_data = await self.upstream_client.fetch_tmdb_movie(
+                            tmdb_id, language=language
+                        )
+                    else:
+                        movie_data = await self.upstream_client.fetch_imdb_movie(
+                            imdb_id, language=language
+                        )
                     await self.cache_service.set(
                         resource_key, movie_data, ttl=86400
                     )
@@ -53,13 +66,15 @@ class Worker:
                         "Successfully cached and notified for %s", resource_key
                     )
                 except LookupError:
-                    logger.warning("Movie %s not found on upstream TMDB", tmdb_id)
+                    identifier = tmdb_id if tmdb_id is not None else imdb_id
+                    logger.warning("Movie %s not found on upstream TMDB", identifier)
                     await self.cache_service.set(
                         resource_key, {"error": "Not found"}, ttl=300
                     )
                     await self.queue_service.publish_ready(resource_key)
                 except Exception as e:  # noqa: BLE001
-                    logger.error("Error processing task for %s: %s", tmdb_id, e)
+                    identifier = tmdb_id if tmdb_id is not None else imdb_id
+                    logger.error("Error processing task for %s: %s", identifier, e)
 
             except asyncio.CancelledError:
                 break

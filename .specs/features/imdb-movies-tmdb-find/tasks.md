@@ -120,7 +120,7 @@ T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9
 **Requirement**: WORK-01
 
 **Done when**:
-- [ ] Worker dispatches tasks containing `imdb_id` to `fetch_imdb_movie`.
+- [x] Worker dispatches tasks containing `imdb_id` to `fetch_imdb_movie`.
 
 **Tests**: integration
 **Gate**: full

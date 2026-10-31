@@ -13,16 +13,25 @@ def parse(input_data: dict) -> dict:
     raw_id = movie.get("id") if movie.get("id") is not None else movie.get("tconst")
     title = movie.get("title") or movie.get("name") or movie.get("primaryTitle")
     original_title = movie.get("original_title") or movie.get("originalTitle")
-    
+
     release_date = movie.get("release_date")
-    year = int(release_date.split("-")[0]) if release_date else (int(movie.get("startYear", 0)) if movie.get("startYear") else None)
-    
+    year = (
+        int(release_date.split("-")[0])
+        if release_date
+        else (int(movie.get("startYear", 0)) if movie.get("startYear") else None)
+    )
+
     overview = movie.get("overview", "") or movie.get("description", "")
     poster_path = movie.get("poster_path")
     backdrop_path = movie.get("backdrop_path")
-    
+
     fallback_imdb_id = input_data.get("imdb_id")
-    imdb_id = movie.get("imdb_id") or fallback_imdb_id or movie.get("tconst") or (str(raw_id) if raw_id is not None else None)
+    imdb_id = (
+        movie.get("imdb_id")
+        or fallback_imdb_id
+        or movie.get("tconst")
+        or (str(raw_id) if raw_id is not None else None)
+    )
     tmdb_id = int(movie.get("id")) if movie.get("id") is not None else None
 
     return {
@@ -36,6 +45,7 @@ def parse(input_data: dict) -> dict:
         "imdb_id": str(imdb_id) if imdb_id is not None else None,
         "tmdb_id": tmdb_id,
     }
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

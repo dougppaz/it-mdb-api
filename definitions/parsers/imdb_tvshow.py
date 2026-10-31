@@ -12,17 +12,28 @@ def parse(input_data: dict) -> dict:
 
     raw_id = tv.get("id") if tv.get("id") is not None else tv.get("tconst")
     title = tv.get("name") or tv.get("title") or tv.get("primaryTitle")
-    original_title = tv.get("original_name") or tv.get("original_title") or tv.get("originalTitle")
-    
+    original_title = (
+        tv.get("original_name") or tv.get("original_title") or tv.get("originalTitle")
+    )
+
     first_air_date = tv.get("first_air_date") or tv.get("release_date")
-    year = int(first_air_date.split("-")[0]) if first_air_date else (int(tv.get("startYear", 0)) if tv.get("startYear") else None)
-    
+    year = (
+        int(first_air_date.split("-")[0])
+        if first_air_date
+        else (int(tv.get("startYear", 0)) if tv.get("startYear") else None)
+    )
+
     overview = tv.get("overview", "") or tv.get("description", "")
     poster_path = tv.get("poster_path")
     backdrop_path = tv.get("backdrop_path")
-    
+
     fallback_imdb_id = input_data.get("imdb_id")
-    imdb_id = tv.get("imdb_id") or fallback_imdb_id or tv.get("tconst") or (str(raw_id) if raw_id is not None else None)
+    imdb_id = (
+        tv.get("imdb_id")
+        or fallback_imdb_id
+        or tv.get("tconst")
+        or (str(raw_id) if raw_id is not None else None)
+    )
     tmdb_id = int(tv.get("id")) if tv.get("id") is not None else None
 
     return {

@@ -71,6 +71,7 @@ The implementation adheres strictly to the documentation defined in `definitions
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
+
 class MovieModel(BaseModel):
     id: str
     title: str

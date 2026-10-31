@@ -81,9 +81,7 @@ async def test_fetch_imdb_movie_not_found():
     respx.get("https://api.themoviedb.org/3/find/tt9999999").mock(
         return_value=Response(
             200,
-            json={
-                "movie_results": []
-            },
+            json={"movie_results": []},
         )
     )
 

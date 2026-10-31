@@ -24,7 +24,9 @@ class Worker:
         self.running = True
         logger.info("Worker started, listening on queue: %s", self.queue_name)
         client = get_queue_redis_client()
-        queues = [self.queue_name] if isinstance(self.queue_name, str) else self.queue_name
+        queues = (
+            [self.queue_name] if isinstance(self.queue_name, str) else self.queue_name
+        )
 
         while self.running:
             try:
@@ -88,13 +90,9 @@ class Worker:
                             data = await self.upstream_client.fetch_imdb_movie(
                                 imdb_id, language=language
                             )
-                    await self.cache_service.set(
-                        resource_key, data, ttl=86400
-                    )
+                    await self.cache_service.set(resource_key, data, ttl=86400)
                     await self.queue_service.publish_ready(resource_key)
-                    logger.info(
-                        "Successfully cached and notified for %s", resource_key
-                    )
+                    logger.info("Successfully cached and notified for %s", resource_key)
                 except LookupError:
                     identifier = tmdb_id if tmdb_id is not None else imdb_id
                     logger.warning("Resource %s not found on upstream", identifier)
@@ -119,8 +117,14 @@ class Worker:
 
 async def main():
     import argparse
+
     parser = argparse.ArgumentParser(description="Run the IT MDB Worker")
-    parser.add_argument("--queues", nargs="+", help="List of queues to consume", default=["tasks:movies", "tasks:tvshows"])
+    parser.add_argument(
+        "--queues",
+        nargs="+",
+        help="List of queues to consume",
+        default=["tasks:movies", "tasks:tvshows"],
+    )
     args = parser.parse_args()
 
     worker = Worker(queue_name=args.queues)

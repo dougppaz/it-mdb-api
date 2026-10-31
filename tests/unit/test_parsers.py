@@ -103,4 +103,3 @@ def test_parse_imdb_tvshow_find_named_input():
     assert result["tmdb_backdrop_path"] == "/got_backdrop.jpg"
     assert result["imdb_id"] == "tt0944947"
     assert result["tmdb_id"] == 1399
-

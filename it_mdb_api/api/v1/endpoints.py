@@ -41,9 +41,7 @@ async def get_imdb_movie(
         if is_new:
             await queue_service.enqueue_task(queue_name, task_payload)
 
-        notified = await queue_service.wait_for_readiness(
-            resource_key, timeout=timeout
-        )
+        notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
             if cached_data is not None:
@@ -95,9 +93,7 @@ async def get_tmdb_movie(
         if is_new:
             await queue_service.enqueue_task(queue_name, task_payload)
 
-        notified = await queue_service.wait_for_readiness(
-            resource_key, timeout=timeout
-        )
+        notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
             if cached_data is not None:
@@ -148,9 +144,7 @@ async def get_imdb_tvshow(
         if is_new:
             await queue_service.enqueue_task(queue_name, task_payload)
 
-        notified = await queue_service.wait_for_readiness(
-            resource_key, timeout=timeout
-        )
+        notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
             if cached_data is not None:
@@ -201,9 +195,7 @@ async def get_tmdb_tvshow(
         if is_new:
             await queue_service.enqueue_task(queue_name, task_payload)
 
-        notified = await queue_service.wait_for_readiness(
-            resource_key, timeout=timeout
-        )
+        notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
             if cached_data is not None:

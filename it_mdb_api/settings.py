@@ -2,7 +2,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_prefix="APP_", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_prefix="APP_", extra="ignore"
+    )
     name: str = "it-mdb-api"
     env: str = "development"
     debug: bool = True

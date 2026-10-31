@@ -205,7 +205,7 @@ def main(argv=None):
         drop_journal()
 
     def on_signal(signum, _frame):
-        for proc in list(RUNNING):
+        for proc in RUNNING:
             kill_group(proc)
         restore_all()
         print(f"\nmutate: interrupted by signal {signum} - tree restored", file=sys.stderr)

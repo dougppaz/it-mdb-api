@@ -1,4 +1,5 @@
 import asyncio
+
 import uvicorn
 
 from it_mdb_api.main import app

@@ -51,14 +51,14 @@ DEFAULTS = {"promote_threshold": 2, "window_days": 45, "quarantine_threshold": 2
 
 
 def _now():
-    return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return _dt.datetime.now(_dt.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _parse_date(s):
     try:
-        return _dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=_dt.timezone.utc)
+        return _dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=_dt.UTC)
     except Exception:
-        return _dt.datetime.now(_dt.timezone.utc)
+        return _dt.datetime.now(_dt.UTC)
 
 
 def _store_path(root):
@@ -151,7 +151,7 @@ def _auto_prune(data):
     """Drop candidates that never recurred within the window. Mutates data."""
     threshold = data["promote_threshold"]
     window = data["window_days"]
-    now = _dt.datetime.now(_dt.timezone.utc)
+    now = _dt.datetime.now(_dt.UTC)
     kept = []
     dropped = []
     for l in data["lessons"]:

@@ -115,7 +115,6 @@ async def get_tmdb_movie(
 
 
 @router.get("/tvshows/tt{imdb_id}")
-@router.get("/series/tt{imdb_id}")
 async def get_imdb_tvshow(
     imdb_id: str,
     language: str = Query("en", description="Language code"),
@@ -169,7 +168,6 @@ async def get_imdb_tvshow(
 
 
 @router.get("/tvshows/{tmdb_id}")
-@router.get("/series/{tmdb_id}")
 async def get_tmdb_tvshow(
     tmdb_id: int,
     language: str = Query("en-US", description="Language code"),

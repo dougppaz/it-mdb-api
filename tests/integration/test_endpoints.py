@@ -91,19 +91,6 @@ async def test_get_tmdb_tvshow_cache_hit():
     assert response.json() == {"id": "1399", "title": "Game of Thrones"}
 
 
-@pytest.mark.asyncio
-async def test_get_series_alias_cache_hit():
-    cache = CacheService()
-    resource_key = "tvshow:tmdb:1399:en-US"
-    await cache.set(resource_key, {"id": "1399", "title": "Game of Thrones"})
-
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.get("/v1/series/1399")
-
-    assert response.status_code == 200
-    assert response.json() == {"id": "1399", "title": "Game of Thrones"}
-
 
 @pytest.mark.asyncio
 async def test_get_imdb_tvshow_cache_hit():

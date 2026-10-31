@@ -1,0 +1,33 @@
+schema: definitions/schemas/tvshow-v1.json
+source: imdb
+endpoint: /v1/tvshows/tt{imdb_id}
+description: Retrieve TV show details using IMDb identifier.
+
+parameters:
+  path:
+    - name: imdb_id
+      type: string
+      pattern: '^tt\d+$'
+      required: true
+      description: IMDb ID starting with 'tt' followed by digits (e.g. tt0944947).
+  query:
+    - name: language
+      type: string
+      default: en
+      required: false
+      description: Language code for localized title/content (e.g. en, pt-BR).
+
+behavior:
+  cache:
+    key_pattern: "tvshow:imdb:{imdb_id}:{language}"
+    ttl_seconds: 86400
+    negative_ttl_seconds: 300
+  parser: definitions/parsers/imdb_tvshow.py
+  upstream:
+    find:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /find/{imdb_id}
+      query_params:
+        external_source: imdb_id
+        language: "{language}"

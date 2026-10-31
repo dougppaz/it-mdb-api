@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TVShowV1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "original_title": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "overview": {
+      "type": "string"
+    },
+    "tmdb_poster_path": {
+      "type": "string"
+    },
+    "tmdb_backdrop_path": {
+      "type": "string"
+    },
+    "imdb_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tmdb_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "title"
+  ]
+}

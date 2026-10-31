@@ -12,7 +12,7 @@ async def run_server():
 
 
 async def run_worker():
-    worker = Worker(queue_name="tasks:movies")
+    worker = Worker(queue_name=["tasks:movies", "tasks:tvshows"])
     await worker.run()
 
 

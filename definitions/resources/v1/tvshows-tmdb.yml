@@ -1,0 +1,35 @@
+schema: definitions/schemas/tvshow-v1.json
+source: tmdb
+endpoint: /v1/tvshows/{tmdb_id}
+description: Retrieve TV show details using TMDB identifier.
+
+parameters:
+  path:
+    - name: tmdb_id
+      type: integer
+      required: true
+      description: TMDB numeric identifier for TV show.
+  query:
+    - name: language
+      type: string
+      default: en-US
+      required: false
+      description: Language code for localized title/content (e.g. en-US, pt-BR).
+
+behavior:
+  cache:
+    key_pattern: "tvshow:tmdb:{tmdb_id}:{language}"
+    ttl_seconds: 86400
+    negative_ttl_seconds: 300
+  parser: definitions/parsers/tmdb_tvshow.py
+  upstream:
+    tv:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /tv/{tmdb_id}
+      query_params:
+        language: "{language}"
+    external_ids:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /tv/{tmdb_id}/external_ids

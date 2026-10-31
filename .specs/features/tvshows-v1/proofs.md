@@ -1,7 +1,7 @@
 # tvshows-v1 proofs
 
-**HEAD**: ce56970
-**Tree**: dirty - it_mdb_api/api/v1/endpoints.py, it_mdb_api/services/upstream.py, it_mdb_api/worker.py, run.py, tests/integration/test_endpoints.py
+**HEAD**: 5008660
+**Tree**: clean
 **Result**: 7 pass, 0 fail; mutations 0 killed, 0 not
 
 | Check | Proof | Ran | Passed | Result |

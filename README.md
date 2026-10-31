@@ -59,6 +59,27 @@ python3 -m poetry run python3 run.py
 > **⚠️ Important Notice on `run.py` & `fakeredis`:**
 > `run.py` and `fakeredis` (`USE_FAKE_REDIS=true`) are designed **strictly for local development and testing**. Because `fakeredis` operates purely in-memory, running them in the same Python process allows the API and worker to share the same Redis state. **This solution must NOT be used in production environments**, where a standalone Redis instance/cluster and separate worker processes/containers are required.
 
+### Running with Docker Compose
+
+You can easily spin up the API, Worker, and a Redis instance using Docker. This setup automatically builds the production-ready Docker image with multi-stage builds.
+
+1. Review and adjust environment variables in `.docker.env` if needed.
+2. Run the services in detached mode:
+   ```bash
+   docker-compose up --build -d
+   ```
+3. Access the API on `http://localhost:8000`.
+
+To view the logs from all services, run:
+```bash
+docker-compose logs -f
+```
+
+To shut down the services:
+```bash
+docker-compose down
+```
+
 ---
 
 ## How to Test

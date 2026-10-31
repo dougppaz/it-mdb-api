@@ -11,7 +11,9 @@ logger = logging.getLogger("it-mdb-worker")
 
 
 class Worker:
-    def __init__(self, queue_name: str | list[str] = "tasks:movies"):
+    def __init__(self, queue_name: str | list[str] | None = None):
+        if queue_name is None:
+            queue_name = ["tasks:movies", "tasks:tvshows"]
         self.queue_name = queue_name
         self.cache_service = CacheService()
         self.queue_service = QueueService()
@@ -116,7 +118,12 @@ class Worker:
 
 
 async def main():
-    worker = Worker()
+    import argparse
+    parser = argparse.ArgumentParser(description="Run the IT MDB Worker")
+    parser.add_argument("--queues", nargs="+", help="List of queues to consume", default=["tasks:movies", "tasks:tvshows"])
+    args = parser.parse_args()
+
+    worker = Worker(queue_name=args.queues)
     try:
         await worker.run()
     except KeyboardInterrupt:

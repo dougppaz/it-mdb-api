@@ -30,11 +30,13 @@ A cached, multi-language REST API for retrieving movie and TV show titles from I
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `REDIS_URL` | Redis connection string | `redis://localhost:6379/0` |
-| `USE_FAKE_REDIS` | Use in-memory `fakeredis` instead of real Redis (ideal for local testing) | `false` |
-| `TMDB_API_READ_ACCESS_TOKEN` | TMDB API Read Access Token (Bearer token for upstream calls) | `""` |
+| `APP_NAME` | Application name | `it-mdb-api` |
 | `APP_ENV` | Application environment (`development`, `production`) | `development` |
 | `APP_DEBUG` | Enable debug mode | `true` |
+| `REDIS_URL` | Redis connection string for cache | `redis://localhost:6379/0` |
+| `QUEUE_REDIS_URL` | Redis connection string for queue/background tasks | `redis://localhost:6379/1` |
+| `USE_FAKE_REDIS` | Use in-memory `fakeredis` instead of real Redis (ideal for local testing) | `false` |
+| `TMDB_API_READ_ACCESS_TOKEN` | TMDB API Read Access Token (Bearer token for upstream calls) | `""` |
 
 ---
 

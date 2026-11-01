@@ -1,6 +1,6 @@
 # openapi-movie-tvshow-schemas proofs
 
-**HEAD**: 2a56920
+**HEAD**: d6c1f6e
 **Tree**: clean
 **Result**: 7 pass, 0 fail; mutations 0 killed, 0 not
 

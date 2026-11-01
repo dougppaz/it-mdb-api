@@ -115,3 +115,20 @@ async def test_get_imdb_tvshow_cache_hit():
         "title": "Game of Thrones",
         "imdb_id": "tt0944947",
     }
+
+
+@pytest.mark.asyncio
+async def test_openapi_schemas():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get("/openapi.json")
+
+    assert response.status_code == 200
+    openapi_spec = response.json()
+    schemas = openapi_spec.get("components", {}).get("schemas", {})
+    assert "MovieV1" in schemas
+    assert "TVShowV1" in schemas
+
+    paths = openapi_spec.get("paths", {})
+    assert "MovieV1" in str(paths.get("/v1/movies/{tmdb_id}", {}))
+    assert "TVShowV1" in str(paths.get("/v1/tvshows/{tmdb_id}", {}))

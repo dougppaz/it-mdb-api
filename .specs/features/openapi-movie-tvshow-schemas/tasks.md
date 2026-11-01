@@ -1,7 +1,7 @@
 # OpenAPI Movie and TVShow Response Schemas Tasks
 
 **Design**: none
-**Status**: In Progress
+**Status**: Done
 **Approved**: 2026-11-01 - user: "aprovado, pode criar as tarefas e seguir para implementacao"
 **Mutations**: 0
 **Build**: `pytest; ruff check it_mdb_api/ definitions/ tests/`
@@ -73,7 +73,7 @@ T1 -> T2 -> T3 -> T4
 **Requirement**: OAPI-02, OAPI-03
 
 **Done when**:
-- [ ] All 4 endpoints specify `response_model`.
+- [x] All 4 endpoints specify `response_model`.
 
 **Tests**: integration
 **Gate**: full
@@ -88,8 +88,8 @@ T1 -> T2 -> T3 -> T4
 **Requirement**: OAPI-01
 
 **Done when**:
-- [ ] Integration test verifies OpenAPI schemas are present and correct.
-- [ ] `pytest` passes across all test suites.
+- [x] Integration test verifies OpenAPI schemas are present and correct.
+- [x] `pytest` passes across all test suites.
 
 **Tests**: integration
 **Gate**: full

@@ -1,12 +1,15 @@
 from fastapi import APIRouter, HTTPException, Query
 
+from it_mdb_api.schemas import MovieV1, TVShowV1
 from it_mdb_api.services.cache import CacheService
 from it_mdb_api.services.queue import QueueService
 
 router = APIRouter(prefix="/v1", tags=["v1"])
 
 
-@router.get("/movies/tt{imdb_id}")
+@router.get(
+    "/movies/tt{imdb_id}", response_model=MovieV1, response_model_exclude_none=True
+)
 async def get_imdb_movie(
     imdb_id: str,
     language: str = Query("en", description="Language code"),
@@ -58,7 +61,9 @@ async def get_imdb_movie(
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
 
-@router.get("/movies/{tmdb_id}")
+@router.get(
+    "/movies/{tmdb_id}", response_model=MovieV1, response_model_exclude_none=True
+)
 async def get_tmdb_movie(
     tmdb_id: int,
     language: str = Query("en-US", description="Language code"),
@@ -110,7 +115,9 @@ async def get_tmdb_movie(
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
 
-@router.get("/tvshows/tt{imdb_id}")
+@router.get(
+    "/tvshows/tt{imdb_id}", response_model=TVShowV1, response_model_exclude_none=True
+)
 async def get_imdb_tvshow(
     imdb_id: str,
     language: str = Query("en", description="Language code"),
@@ -161,7 +168,9 @@ async def get_imdb_tvshow(
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
 
-@router.get("/tvshows/{tmdb_id}")
+@router.get(
+    "/tvshows/{tmdb_id}", response_model=TVShowV1, response_model_exclude_none=True
+)
 async def get_tmdb_tvshow(
     tmdb_id: int,
     language: str = Query("en-US", description="Language code"),

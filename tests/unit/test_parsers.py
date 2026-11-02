@@ -1,6 +1,7 @@
 from definitions.parsers.imdb_movie import parse as parse_imdb
 from definitions.parsers.imdb_tvshow import parse as parse_imdb_tvshow
 from definitions.parsers.tmdb_movie import parse as parse_tmdb
+from definitions.parsers.tmdb_search import parse as parse_tmdb_search
 from definitions.parsers.tmdb_tvshow import parse as parse_tmdb_tvshow
 
 
@@ -103,3 +104,39 @@ def test_parse_imdb_tvshow_find_named_input():
     assert result["tmdb_backdrop_path"] == "/got_backdrop.jpg"
     assert result["imdb_id"] == "tt0944947"
     assert result["tmdb_id"] == 1399
+
+
+def test_parse_tmdb_search():
+    named_input = {
+        "search": {
+            "results": [
+                {
+                    "id": 550,
+                    "media_type": "movie",
+                    "title": "Fight Club",
+                    "release_date": "1999-10-15",
+                    "overview": "Mischief.",
+                    "poster_path": "/p.jpg",
+                    "backdrop_path": "/b.jpg",
+                },
+                {
+                    "id": 999,
+                    "media_type": "person",
+                    "name": "Someone",
+                },
+            ]
+        },
+        "external_ids": {
+            550: {
+                "imdb_id": "tt0137523",
+            }
+        },
+    }
+    results = parse_tmdb_search(named_input)
+    assert len(results) == 1
+    assert results[0]["id"] == "550"
+    assert results[0]["title"] == "Fight Club"
+    assert results[0]["imdb_id"] == "tt0137523"
+    assert results[0]["tmdb_id"] == 550
+    assert results[0]["media_type"] == "movie"
+

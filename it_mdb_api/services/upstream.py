@@ -5,6 +5,7 @@ import httpx
 from definitions.parsers.imdb_movie import parse as parse_imdb_movie
 from definitions.parsers.imdb_tvshow import parse as parse_imdb_tvshow
 from definitions.parsers.tmdb_movie import parse as parse_tmdb_movie
+from definitions.parsers.tmdb_search import parse as parse_tmdb_search
 from definitions.parsers.tmdb_tvshow import parse as parse_tmdb_tvshow
 from it_mdb_api.settings import settings
 
@@ -146,3 +147,49 @@ class UpstreamClient:
             raise LookupError(f"IMDb TV show {imdb_id} not found in TMDB find results")
 
         return parse_imdb_tvshow({"find": raw_data, "imdb_id": imdb_id})
+
+    async def fetch_tmdb_search(self, q: str, language: str = "en-US") -> list:
+        search_url = "https://api.themoviedb.org/3/search/multi"
+        headers = {
+            "Authorization": f"Bearer {settings.tmdb.tmdb_api_read_access_token}",
+            "accept": "application/json",
+        }
+        params = {"query": q, "language": language}
+
+        client = await self._get_client()
+        should_close = self._client is None
+        try:
+            search_resp = await client.get(search_url, headers=headers, params=params)
+            search_resp.raise_for_status()
+            raw_search_data = search_resp.json()
+
+            results = raw_search_data.get("results", [])
+            ext_tasks = []
+            ext_meta = []
+
+            for item in results:
+                media_type = item.get("media_type")
+                if media_type not in ("movie", "tv"):
+                    continue
+                tmdb_id = item.get("id")
+                if tmdb_id is None:
+                    continue
+                ext_url = f"https://api.themoviedb.org/3/{'movie' if media_type == 'movie' else 'tv'}/{tmdb_id}/external_ids"
+                ext_tasks.append(client.get(ext_url, headers=headers))
+                ext_meta.append((tmdb_id, media_type))
+
+            external_ids_map = {}
+            if ext_tasks:
+                ext_resps = await asyncio.gather(*ext_tasks, return_exceptions=True)
+                for (tmdb_id, _), ext_resp in zip(ext_meta, ext_resps):
+                    if not isinstance(ext_resp, Exception) and ext_resp.status_code == 200:
+                        external_ids_map[tmdb_id] = ext_resp.json()
+
+            return parse_tmdb_search({
+                "search": raw_search_data,
+                "external_ids": external_ids_map,
+            })
+        finally:
+            if should_close:
+                await client.aclose()
+

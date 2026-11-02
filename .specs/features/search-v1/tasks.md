@@ -60,7 +60,7 @@ T1 -> T2 -> T3 -> T4 -> T5
 **Requirement**: SRCH-03
 
 **Done when**:
-- [ ] Upstream client fetches search results and dispatches per-item external ID calls, invoking `tmdb_search.py` parser.
+- [x] Upstream client fetches search results and dispatches per-item external ID calls, invoking `tmdb_search.py` parser.
 
 **Tests**: unit
 **Gate**: quick

@@ -9,6 +9,7 @@
 | AD-003 | active | Support `fakeredis` via environment variable (`USE_FAKE_REDIS=true`) for local development/testing | Enables robust local development and unit/integration testing without requiring an external Redis server. | 2023-10-24 |
 | AD-004 | active | Add nullable `imdb_id` and `tmdb_id` to movie-v1 schema | Supports cross-referencing between TMDB and IMDb via TMDB external_ids endpoint. | 2026-10-27 |
 | AD-005 | active | Implement IMDb movies endpoint using TMDB Find API (`/find/{imdb_id}`) | Allows looking up movies by IMDb ID via TMDB's Find service, ensuring consistent data schema. | 2026-10-27 |
+| AD-006 | active | Handle cached `{"error": "Not found"}` in API endpoints by raising HTTP 404 | Prevents `ResponseValidationError` (HTTP 500) when a requested resource is not found on upstream. | 2025-11-02 |
 
 ## Handoff Snapshot
 

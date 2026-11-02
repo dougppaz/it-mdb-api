@@ -6,9 +6,25 @@ from it_mdb_api.services.queue import QueueService
 
 router = APIRouter(prefix="/v1", tags=["v1"])
 
+ERROR_RESPONSES = {
+    404: {"description": "Resource Not Found"},
+    504: {"description": "Gateway Timeout"},
+}
+
+
+def _handle_cached_data(cached_data):
+    if cached_data is not None:
+        if isinstance(cached_data, dict) and cached_data.get("error") == "Not found":
+            raise HTTPException(status_code=404, detail="Not found")
+        return cached_data
+    return None
+
 
 @router.get(
-    "/movies/tt{imdb_id}", response_model=MovieV1, response_model_exclude_none=True
+    "/movies/tt{imdb_id}",
+    response_model=MovieV1,
+    response_model_exclude_none=True,
+    responses=ERROR_RESPONSES,
 )
 async def get_imdb_movie(
     imdb_id: str,
@@ -26,8 +42,9 @@ async def get_imdb_movie(
 
     # 1. Check cache
     cached_data = await cache_service.get(resource_key)
-    if cached_data is not None:
-        return cached_data
+    res = _handle_cached_data(cached_data)
+    if res is not None:
+        return res
 
     # 2. Enqueue or wait
     task_payload = {
@@ -47,13 +64,15 @@ async def get_imdb_movie(
         notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
-            if cached_data is not None:
-                return cached_data
+            res = _handle_cached_data(cached_data)
+            if res is not None:
+                return res
             raise HTTPException(status_code=504, detail="Gateway Timeout")
 
         cached_data = await cache_service.get(resource_key)
-        if cached_data is not None:
-            return cached_data
+        res = _handle_cached_data(cached_data)
+        if res is not None:
+            return res
 
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
@@ -62,7 +81,10 @@ async def get_imdb_movie(
 
 
 @router.get(
-    "/movies/{tmdb_id}", response_model=MovieV1, response_model_exclude_none=True
+    "/movies/{tmdb_id}",
+    response_model=MovieV1,
+    response_model_exclude_none=True,
+    responses=ERROR_RESPONSES,
 )
 async def get_tmdb_movie(
     tmdb_id: int,
@@ -80,8 +102,9 @@ async def get_tmdb_movie(
 
     # 1. Check cache
     cached_data = await cache_service.get(resource_key)
-    if cached_data is not None:
-        return cached_data
+    res = _handle_cached_data(cached_data)
+    if res is not None:
+        return res
 
     # 2. Enqueue or wait
     task_payload = {
@@ -101,13 +124,15 @@ async def get_tmdb_movie(
         notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
-            if cached_data is not None:
-                return cached_data
+            res = _handle_cached_data(cached_data)
+            if res is not None:
+                return res
             raise HTTPException(status_code=504, detail="Gateway Timeout")
 
         cached_data = await cache_service.get(resource_key)
-        if cached_data is not None:
-            return cached_data
+        res = _handle_cached_data(cached_data)
+        if res is not None:
+            return res
 
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
@@ -116,7 +141,10 @@ async def get_tmdb_movie(
 
 
 @router.get(
-    "/tvshows/tt{imdb_id}", response_model=TVShowV1, response_model_exclude_none=True
+    "/tvshows/tt{imdb_id}",
+    response_model=TVShowV1,
+    response_model_exclude_none=True,
+    responses=ERROR_RESPONSES,
 )
 async def get_imdb_tvshow(
     imdb_id: str,
@@ -133,8 +161,9 @@ async def get_imdb_tvshow(
     queue_service = QueueService()
 
     cached_data = await cache_service.get(resource_key)
-    if cached_data is not None:
-        return cached_data
+    res = _handle_cached_data(cached_data)
+    if res is not None:
+        return res
 
     task_payload = {
         "imdb_id": f"tt{imdb_id}",
@@ -154,13 +183,15 @@ async def get_imdb_tvshow(
         notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
-            if cached_data is not None:
-                return cached_data
+            res = _handle_cached_data(cached_data)
+            if res is not None:
+                return res
             raise HTTPException(status_code=504, detail="Gateway Timeout")
 
         cached_data = await cache_service.get(resource_key)
-        if cached_data is not None:
-            return cached_data
+        res = _handle_cached_data(cached_data)
+        if res is not None:
+            return res
 
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 
@@ -169,7 +200,10 @@ async def get_imdb_tvshow(
 
 
 @router.get(
-    "/tvshows/{tmdb_id}", response_model=TVShowV1, response_model_exclude_none=True
+    "/tvshows/{tmdb_id}",
+    response_model=TVShowV1,
+    response_model_exclude_none=True,
+    responses=ERROR_RESPONSES,
 )
 async def get_tmdb_tvshow(
     tmdb_id: int,
@@ -186,8 +220,9 @@ async def get_tmdb_tvshow(
     queue_service = QueueService()
 
     cached_data = await cache_service.get(resource_key)
-    if cached_data is not None:
-        return cached_data
+    res = _handle_cached_data(cached_data)
+    if res is not None:
+        return res
 
     task_payload = {
         "tmdb_id": tmdb_id,
@@ -207,13 +242,15 @@ async def get_tmdb_tvshow(
         notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
         if not notified:
             cached_data = await cache_service.get(resource_key)
-            if cached_data is not None:
-                return cached_data
+            res = _handle_cached_data(cached_data)
+            if res is not None:
+                return res
             raise HTTPException(status_code=504, detail="Gateway Timeout")
 
         cached_data = await cache_service.get(resource_key)
-        if cached_data is not None:
-            return cached_data
+        res = _handle_cached_data(cached_data)
+        if res is not None:
+            return res
 
         raise HTTPException(status_code=504, detail="Gateway Timeout")
 

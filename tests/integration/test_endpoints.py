@@ -130,5 +130,40 @@ async def test_openapi_schemas():
     assert "TVShowV1" in schemas
 
     paths = openapi_spec.get("paths", {})
-    assert "MovieV1" in str(paths.get("/v1/movies/{tmdb_id}", {}))
-    assert "TVShowV1" in str(paths.get("/v1/tvshows/{tmdb_id}", {}))
+    for path_key in ["/v1/movies/{tmdb_id}", "/v1/movies/tt{imdb_id}", "/v1/tvshows/{tmdb_id}", "/v1/tvshows/tt{imdb_id}"]:
+        path_item = paths.get(path_key, {})
+        assert path_item, f"Path {path_key} missing in openapi"
+        # Check get operation responses
+        get_op = path_item.get("get", {})
+        responses = get_op.get("responses", {})
+        assert "404" in responses, f"404 response missing in openapi for {path_key}"
+        assert "504" in responses, f"504 response missing in openapi for {path_key}"
+
+
+@pytest.mark.asyncio
+async def test_get_movie_not_found_cached():
+    cache = CacheService()
+    resource_key = "movie:imdb:tt39300469:pt-BR"
+    await cache.set(resource_key, {"error": "Not found"})
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get("/v1/movies/tt39300469?language=pt-BR")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Not found"}
+
+
+@pytest.mark.asyncio
+async def test_get_tvshow_not_found_cached():
+    cache = CacheService()
+    resource_key = "tvshow:tmdb:999999:en-US"
+    await cache.set(resource_key, {"error": "Not found"})
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get("/v1/tvshows/999999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Not found"}
+

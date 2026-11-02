@@ -130,7 +130,12 @@ async def test_openapi_schemas():
     assert "TVShowV1" in schemas
 
     paths = openapi_spec.get("paths", {})
-    for path_key in ["/v1/movies/{tmdb_id}", "/v1/movies/tt{imdb_id}", "/v1/tvshows/{tmdb_id}", "/v1/tvshows/tt{imdb_id}"]:
+    for path_key in [
+        "/v1/movies/{tmdb_id}",
+        "/v1/movies/tt{imdb_id}",
+        "/v1/tvshows/{tmdb_id}",
+        "/v1/tvshows/tt{imdb_id}",
+    ]:
         path_item = paths.get(path_key, {})
         assert path_item, f"Path {path_key} missing in openapi"
         # Check get operation responses
@@ -166,4 +171,3 @@ async def test_get_tvshow_not_found_cached():
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Not found"}
-

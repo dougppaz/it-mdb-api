@@ -1,0 +1,44 @@
+schema: definitions/schemas/search-item-v1.json
+source: tmdb
+endpoint: /v1/search
+description: Search for movies and TV shows using TMDB multi-search.
+
+parameters:
+  path: []
+  query:
+    - name: q
+      type: string
+      required: true
+      description: Search query string.
+    - name: language
+      type: string
+      default: en-US
+      required: false
+      description: Language code for localized title/content (e.g. en-US, pt-BR).
+
+behavior:
+  cache:
+    key_pattern: "search:tmdb:{q}:{language}"
+    ttl_seconds: 86400
+    negative_ttl_seconds: 300
+  parser: definitions/parsers/tmdb_search.py
+  upstream:
+    search:
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      path: /search/multi
+      query_params:
+        query: "{q}"
+        language: "{language}"
+  upstream_items:
+    external_ids:
+      source_list: search
+      item_path: results
+      filter:
+        media_type: ["movie", "tv"]
+      modality: definitions/upstream/tmdb-v3-api.yml
+      method: GET
+      key_field: media_type
+      path_map:
+        movie: /movie/{id}/external_ids
+        tv: /tv/{id}/external_ids

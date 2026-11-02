@@ -62,6 +62,14 @@ Each resource definition file defines a `GET` endpoint and maps to a response JS
 | `behavior.upstream.[key].method` | `string` | HTTP method (`GET`, etc.). |
 | `behavior.upstream.[key].path` | `string` | Upstream relative path template (e.g. `/movie/{tmdb_id}`). |
 | `behavior.upstream.[key].query_params` | `map` | Query parameters sent to the upstream service. |
+| `behavior.upstream_items` | `map` | Dictionary of per-item upstream requests dispatched based on results of a primary upstream call. |
+| `behavior.upstream_items.[key].source_list` | `string` | Key of the upstream request whose results are iterated over (e.g. `search`). |
+| `behavior.upstream_items.[key].item_path` | `string` | Property in the source upstream response containing the items list (e.g. `results`). |
+| `behavior.upstream_items.[key].key_field` | `string` | Property on each item used as the key for `path_map` lookup (e.g. `media_type`). |
+| `behavior.upstream_items.[key].filter` | `map` | Optional filters on item properties (e.g. `media_type: ["movie", "tv"]`). |
+| `behavior.upstream_items.[key].modality` | `string` | Path to upstream service definition (`definitions/upstream/tmdb-v3-api.yml`). |
+| `behavior.upstream_items.[key].method` | `string` | HTTP method (`GET`, etc.). |
+| `behavior.upstream_items.[key].path_map` | `map` | Mapping of item type/condition to upstream relative path template (e.g. `movie: /movie/{id}/external_ids`, `tv: /tv/{id}/external_ids`). |
 
 > **Note on Shared Elements:**
 > - All endpoints are `GET`.

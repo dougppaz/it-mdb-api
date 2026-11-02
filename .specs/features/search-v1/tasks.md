@@ -1,7 +1,7 @@
 # Tasks: Search API v1 Endpoint
 
 **Design**: none
-**Status**: In Progress
+**Status**: Done
 **Approved**: 2025-02-20 - user: "criacao das especificacoes e implementacao do novo endpoint"
 **Mutations**: 0
 **Build**: `pytest; ruff check it_mdb_api/ definitions/ tests/`
@@ -75,7 +75,7 @@ T1 -> T2 -> T3 -> T4 -> T5
 **Requirement**: SRCH-03
 
 **Done when**:
-- [ ] Worker processes queue tasks for search and caches results.
+- [x] Worker processes queue tasks for search and caches results.
 
 **Tests**: integration
 **Gate**: full
@@ -90,7 +90,7 @@ T1 -> T2 -> T3 -> T4 -> T5
 **Requirement**: SRCH-01, SRCH-03
 
 **Done when**:
-- [ ] API endpoint handles cache check, queue wait, and timeout for search queries.
+- [x] API endpoint handles cache check, queue wait, and timeout for search queries.
 
 **Tests**: integration
 **Gate**: full
@@ -105,7 +105,7 @@ T1 -> T2 -> T3 -> T4 -> T5
 **Requirement**: SRCH-04
 
 **Done when**:
-- [ ] `pytest` passes with 100% success.
+- [x] `pytest` passes with 100% success.
 
 **Tests**: integration
 **Gate**: build

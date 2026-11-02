@@ -128,6 +128,7 @@ async def test_openapi_schemas():
     schemas = openapi_spec.get("components", {}).get("schemas", {})
     assert "MovieV1" in schemas
     assert "TVShowV1" in schemas
+    assert "SearchItemV1" in schemas
 
     paths = openapi_spec.get("paths", {})
     for path_key in [
@@ -135,6 +136,7 @@ async def test_openapi_schemas():
         "/v1/movies/tt{imdb_id}",
         "/v1/tvshows/{tmdb_id}",
         "/v1/tvshows/tt{imdb_id}",
+        "/v1/search",
     ]:
         path_item = paths.get(path_key, {})
         assert path_item, f"Path {path_key} missing in openapi"
@@ -171,3 +173,18 @@ async def test_get_tvshow_not_found_cached():
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Not found"}
+
+
+@pytest.mark.asyncio
+async def test_search_endpoint_cache_hit():
+    cache = CacheService()
+    resource_key = "search:tmdb:Fight:en-US"
+    await cache.set(resource_key, [{"id": "550", "title": "Fight Club", "media_type": "movie"}])
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get("/v1/search?q=Fight")
+
+    assert response.status_code == 200
+    assert response.json() == [{"id": "550", "title": "Fight Club", "media_type": "movie"}]
+

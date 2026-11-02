@@ -13,7 +13,7 @@ logger = logging.getLogger("it-mdb-worker")
 class Worker:
     def __init__(self, queue_name: str | list[str] | None = None):
         if queue_name is None:
-            queue_name = ["tasks:movies", "tasks:tvshows"]
+            queue_name = ["tasks:movies", "tasks:tvshows", "tasks:search"]
         self.queue_name = queue_name
         self.cache_service = CacheService()
         self.queue_service = QueueService()
@@ -36,6 +36,7 @@ class Worker:
 
                 _, raw_payload = result
                 payload = json.loads(raw_payload)
+                q = payload.get("q")
                 tmdb_id = payload.get("tmdb_id")
                 imdb_id = payload.get("imdb_id")
                 language = payload.get("language", "en-US")
@@ -43,8 +44,12 @@ class Worker:
                 resource_type = payload.get("resource_type", "movie")
                 if resource_key and resource_key.startswith("tvshow:"):
                     resource_type = "tvshow"
+                elif resource_key and resource_key.startswith("search:"):
+                    resource_type = "search"
 
-                if resource_type == "tvshow":
+                if resource_type == "search":
+                    logger.info("Processing task for search query: %s (lang: %s)", q, language)
+                elif resource_type == "tvshow":
                     if tmdb_id is not None:
                         logger.info(
                             "Processing task for TMDB TV show ID: %s (lang: %s)",
@@ -72,7 +77,11 @@ class Worker:
                         )
 
                 try:
-                    if resource_type == "tvshow":
+                    if resource_type == "search":
+                        data = await self.upstream_client.fetch_tmdb_search(
+                            q, language=language
+                        )
+                    elif resource_type == "tvshow":
                         if tmdb_id is not None:
                             data = await self.upstream_client.fetch_tmdb_tvshow(
                                 tmdb_id, language=language
@@ -94,14 +103,14 @@ class Worker:
                     await self.queue_service.publish_ready(resource_key)
                     logger.info("Successfully cached and notified for %s", resource_key)
                 except LookupError:
-                    identifier = tmdb_id if tmdb_id is not None else imdb_id
+                    identifier = q if q is not None else (tmdb_id if tmdb_id is not None else imdb_id)
                     logger.warning("Resource %s not found on upstream", identifier)
                     await self.cache_service.set(
                         resource_key, {"error": "Not found"}, ttl=300
                     )
                     await self.queue_service.publish_ready(resource_key)
                 except Exception as e:  # noqa: BLE001
-                    identifier = tmdb_id if tmdb_id is not None else imdb_id
+                    identifier = q if q is not None else (tmdb_id if tmdb_id is not None else imdb_id)
                     logger.error("Error processing task for %s: %s", identifier, e)
 
             except asyncio.CancelledError:
@@ -123,7 +132,7 @@ async def main():
         "--queues",
         nargs="+",
         help="List of queues to consume",
-        default=["tasks:movies", "tasks:tvshows"],
+        default=["tasks:movies", "tasks:tvshows", "tasks:search"],
     )
     args = parser.parse_args()
 

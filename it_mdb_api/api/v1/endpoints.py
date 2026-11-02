@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from it_mdb_api.schemas import MovieV1, TVShowV1
+from it_mdb_api.schemas import MovieV1, SearchItemV1, TVShowV1
 from it_mdb_api.services.cache import CacheService
 from it_mdb_api.services.queue import QueueService
 
@@ -256,3 +256,65 @@ async def get_tmdb_tvshow(
 
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Gateway Timeout")
+
+
+@router.get(
+    "/search",
+    response_model=list[SearchItemV1],
+    response_model_exclude_none=True,
+    responses=ERROR_RESPONSES,
+)
+async def search_endpoint(
+    q: str = Query(..., description="Search query string"),
+    language: str = Query("en-US", description="Language code"),
+    timeout: int = Query(
+        30,
+        ge=1,
+        le=60,
+        description="Max seconds to wait for cache population",
+    ),
+):
+    resource_key = f"search:tmdb:{q}:{language}"
+    cache_service = CacheService()
+    queue_service = QueueService()
+
+    # 1. Check cache
+    cached_data = await cache_service.get(resource_key)
+    res = _handle_cached_data(cached_data)
+    if res is not None:
+        return res
+
+    # 2. Enqueue or wait
+    task_payload = {
+        "q": q,
+        "language": language,
+        "resource_key": resource_key,
+        "resource_type": "search",
+    }
+    queue_name = "tasks:search"
+
+    try:
+        is_new = await queue_service.acquire_dedup_lock(
+            resource_key, ttl=max(timeout * 2, 60)
+        )
+        if is_new:
+            await queue_service.enqueue_task(queue_name, task_payload)
+
+        notified = await queue_service.wait_for_readiness(resource_key, timeout=timeout)
+        if not notified:
+            cached_data = await cache_service.get(resource_key)
+            res = _handle_cached_data(cached_data)
+            if res is not None:
+                return res
+            raise HTTPException(status_code=504, detail="Gateway Timeout")
+
+        cached_data = await cache_service.get(resource_key)
+        res = _handle_cached_data(cached_data)
+        if res is not None:
+            return res
+
+        raise HTTPException(status_code=504, detail="Gateway Timeout")
+
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Gateway Timeout")
+

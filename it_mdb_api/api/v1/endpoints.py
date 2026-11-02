@@ -317,4 +317,3 @@ async def search_endpoint(
 
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Gateway Timeout")
-

@@ -28,7 +28,8 @@ def parse(input_data: dict) -> list:
             {
                 "id": str(tmdb_id) if tmdb_id is not None else None,
                 "title": item.get("title") or item.get("name"),
-                "original_title": item.get("original_title") or item.get("original_name"),
+                "original_title": item.get("original_title")
+                or item.get("original_name"),
                 "year": year,
                 "overview": item.get("overview", ""),
                 "tmdb_poster_path": item.get("poster_path"),

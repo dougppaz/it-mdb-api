@@ -4,7 +4,7 @@
 **Status**: Done
 **Approved**: 2025-02-20 - user: "criacao das especificacoes e implementacao do novo endpoint"
 **Mutations**: 0
-**Build**: `pytest; ruff check it_mdb_api/ definitions/ tests/`
+**Build**: `pytest; ruff format --check it_mdb_api/ definitions/ tests/; ruff check it_mdb_api/ definitions/ tests/`
 
 ## Test Coverage Matrix
 
@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | Quick | After parser / unit test tasks | `pytest tests/unit/` |
 | Full | After upstream client & integration test tasks | `pytest` |
-| Build | After all tasks | `pytest; ruff check it_mdb_api/ definitions/ tests/` |
+| Build | After all tasks | `pytest; ruff format --check it_mdb_api/ definitions/ tests/; ruff check it_mdb_api/ definitions/ tests/` |
 
 ---
 

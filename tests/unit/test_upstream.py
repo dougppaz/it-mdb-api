@@ -129,4 +129,3 @@ async def test_upstream_search():
     assert results[0]["imdb_id"] == "tt0137523"
     assert results[1]["id"] == "1399"
     assert results[1]["imdb_id"] == "tt0944947"
-

@@ -182,14 +182,18 @@ class UpstreamClient:
             if ext_tasks:
                 ext_resps = await asyncio.gather(*ext_tasks, return_exceptions=True)
                 for (tmdb_id, _), ext_resp in zip(ext_meta, ext_resps):
-                    if not isinstance(ext_resp, Exception) and ext_resp.status_code == 200:
+                    if (
+                        not isinstance(ext_resp, Exception)
+                        and ext_resp.status_code == 200
+                    ):
                         external_ids_map[tmdb_id] = ext_resp.json()
 
-            return parse_tmdb_search({
-                "search": raw_search_data,
-                "external_ids": external_ids_map,
-            })
+            return parse_tmdb_search(
+                {
+                    "search": raw_search_data,
+                    "external_ids": external_ids_map,
+                }
+            )
         finally:
             if should_close:
                 await client.aclose()
-

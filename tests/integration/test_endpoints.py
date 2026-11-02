@@ -179,12 +179,15 @@ async def test_get_tvshow_not_found_cached():
 async def test_search_endpoint_cache_hit():
     cache = CacheService()
     resource_key = "search:tmdb:Fight:en-US"
-    await cache.set(resource_key, [{"id": "550", "title": "Fight Club", "media_type": "movie"}])
+    await cache.set(
+        resource_key, [{"id": "550", "title": "Fight Club", "media_type": "movie"}]
+    )
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get("/v1/search?q=Fight")
 
     assert response.status_code == 200
-    assert response.json() == [{"id": "550", "title": "Fight Club", "media_type": "movie"}]
-
+    assert response.json() == [
+        {"id": "550", "title": "Fight Club", "media_type": "movie"}
+    ]

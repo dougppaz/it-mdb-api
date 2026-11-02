@@ -139,4 +139,3 @@ def test_parse_tmdb_search():
     assert results[0]["imdb_id"] == "tt0137523"
     assert results[0]["tmdb_id"] == 550
     assert results[0]["media_type"] == "movie"
-

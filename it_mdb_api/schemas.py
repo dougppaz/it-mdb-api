@@ -36,4 +36,3 @@ class SearchItemV1(BaseModel):
     imdb_id: str | None = None
     tmdb_id: int | None = None
     media_type: str | None = None
-

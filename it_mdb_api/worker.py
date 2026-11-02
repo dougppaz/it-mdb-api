@@ -48,7 +48,9 @@ class Worker:
                     resource_type = "search"
 
                 if resource_type == "search":
-                    logger.info("Processing task for search query: %s (lang: %s)", q, language)
+                    logger.info(
+                        "Processing task for search query: %s (lang: %s)", q, language
+                    )
                 elif resource_type == "tvshow":
                     if tmdb_id is not None:
                         logger.info(
@@ -103,14 +105,22 @@ class Worker:
                     await self.queue_service.publish_ready(resource_key)
                     logger.info("Successfully cached and notified for %s", resource_key)
                 except LookupError:
-                    identifier = q if q is not None else (tmdb_id if tmdb_id is not None else imdb_id)
+                    identifier = (
+                        q
+                        if q is not None
+                        else (tmdb_id if tmdb_id is not None else imdb_id)
+                    )
                     logger.warning("Resource %s not found on upstream", identifier)
                     await self.cache_service.set(
                         resource_key, {"error": "Not found"}, ttl=300
                     )
                     await self.queue_service.publish_ready(resource_key)
                 except Exception as e:  # noqa: BLE001
-                    identifier = q if q is not None else (tmdb_id if tmdb_id is not None else imdb_id)
+                    identifier = (
+                        q
+                        if q is not None
+                        else (tmdb_id if tmdb_id is not None else imdb_id)
+                    )
                     logger.error("Error processing task for %s: %s", identifier, e)
 
             except asyncio.CancelledError:

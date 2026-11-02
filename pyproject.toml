@@ -1,6 +1,6 @@
 [project]
 name = "it-mdb-api"
-version = "0.1.1"
+version = "0.1.2"
 description = "A cached, multi-language REST API for retrieving movie and TV show titles from IMDb and TMDB"
 authors = [
     {name = "Douglas Paz",email = "eu@douglaspaz.com"}
